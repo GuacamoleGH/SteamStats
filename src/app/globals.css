@@ -43,9 +43,23 @@
 
   /* Accessible focus indicators (WCAG AA) */
   :focus-visible {
-    outline: 2px solid #00f59b !important;
-    outline-offset: 3px !important;
+    outline: 2px solid #00f59b;
+    outline-offset: 2px;
     border-radius: 6px;
+  }
+
+  /* Reset outline on text inputs whose container handles focus-within */
+  input,
+  textarea {
+    outline: none;
+  }
+
+  input:focus,
+  input:focus-visible,
+  textarea:focus,
+  textarea:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
   }
 
   /* Subtle Custom Scrollbar */

@@ -94,8 +94,8 @@ export const SearchHero: React.FC = () => {
 
         {/* Barra de Búsqueda */}
         <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-4">
-          <div className="relative flex items-center bg-carbon-card border border-carbon-border focus-within:border-guacamole-400 focus-within:ring-2 focus-within:ring-guacamole-400/20 rounded-xl transition-all shadow-card group p-1.5">
-            <div className="pl-3.5 text-slate-500 group-focus-within:text-guacamole-400 transition-colors">
+          <div className="relative flex items-center bg-carbon-card border border-carbon-border hover:border-slate-700 focus-within:border-guacamole-400 focus-within:ring-2 focus-within:ring-guacamole-400/25 rounded-2xl transition-all shadow-card group p-1.5 sm:p-2">
+            <div className="pl-3.5 pr-1 text-slate-400 group-focus-within:text-guacamole-400 transition-colors shrink-0">
               <Search className="w-5 h-5" />
             </div>
 
@@ -108,7 +108,7 @@ export const SearchHero: React.FC = () => {
                 if (error) setError(null);
               }}
               placeholder="Pega tu enlace de Steam, vanity URL o SteamID64..."
-              className="w-full bg-transparent border-none text-white placeholder-slate-500 px-3 py-2.5 text-sm sm:text-base focus:outline-none"
+              className="flex-1 bg-transparent border-none text-white placeholder-slate-500 px-3 py-2.5 text-sm sm:text-base focus:outline-none focus:ring-0 min-w-0"
               disabled={loading}
               autoComplete="off"
               spellCheck="false"
@@ -116,7 +116,7 @@ export const SearchHero: React.FC = () => {
 
             {/* Atajo visual */}
             {!query && (
-              <kbd className="hidden sm:inline-flex items-center justify-center h-6 px-2 mr-2 text-[11px] font-mono text-slate-400 bg-carbon-surface rounded border border-carbon-border select-none">
+              <kbd className="hidden sm:inline-flex items-center justify-center h-6 min-w-[24px] px-2 mr-2 text-xs font-mono font-medium text-slate-400 bg-carbon-surface rounded-md border border-carbon-border select-none shrink-0">
                 /
               </kbd>
             )}
@@ -125,9 +125,22 @@ export const SearchHero: React.FC = () => {
             <button
               type="submit"
               disabled={loading || !query.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-carbon-deep bg-accent-gradient hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 sm:py-3 rounded-xl text-sm font-semibold text-carbon-deep bg-accent-gradient hover:opacity-95 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-glow shrink-0 cursor-pointer"
             >
               {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Buscando...</span>
+                </>
+              ) : (
+                <>
+                  <span>Analizar</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </div>
+        </form>
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span>Buscando...</span>
