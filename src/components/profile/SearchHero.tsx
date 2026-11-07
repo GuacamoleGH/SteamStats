@@ -141,19 +141,6 @@ export const SearchHero: React.FC = () => {
             </button>
           </div>
         </form>
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Buscando...</span>
-                </>
-              ) : (
-                <>
-                  <span>Analizar</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
 
         {/* Mensaje de Error */}
         {error && (

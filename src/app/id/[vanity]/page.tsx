@@ -17,10 +17,15 @@ interface VanityPageProps {
 export default async function VanityPage({ params }: VanityPageProps) {
   const { vanity } = await params;
 
+  let targetSteamId: string | null = null;
   try {
     const result = await resolveToSteamId64(vanity);
-    redirect(`/profile/${result.steamId}`);
+    targetSteamId = result.steamId;
   } catch {
     notFound();
+  }
+
+  if (targetSteamId) {
+    redirect(`/profile/${targetSteamId}`);
   }
 }

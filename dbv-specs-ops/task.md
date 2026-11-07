@@ -4,9 +4,9 @@
 
 ## Contexto del Proyecto (Context Snapshot)
 * **Objetivo**: Desarrollar y desplegar `SteamStats` en el homelab personal de GuacamoleGH (`steamstats.guacamolegh.es`) mediante Docker Compose.
-* **Estado actual**: Fase 1 (`/build`) completada y validada con Vitest y build de producción; listo para Fase 2 (Resumen del Perfil, Algoritmo de XP y Top de Juegos).
-* **Última decisión técnica**: Integración del arnés de compatibilidad Node.js exFAT en `scripts/patch-exfat.js` y configuración de `outputFileTracingRoot` para build reproducible de Next.js en Windows y Docker Linux.
-* **Próximo paso**: Iniciar Fase 2 (`REQ-02`, `REQ-03`, `REQ-04`, `REQ-07`): Cliente Steam Web API, tarjetas de resumen, regla matemática de XP e insignias.
+* **Estado actual**: Fase 2 (`/build`) completada y validada; listo para Fase 3 (Precios de Tienda, IsThereAnyDeal y Valor de Cuenta).
+* **Última decisión técnica**: Implementación del algoritmo matemático de niveles y XP de Steam ($100 \times (\lfloor L/10 \rfloor + 1)$) con tests unitarios en Vitest y pipeline de caché de 1h en SQLite con cooldown de 5 min.
+* **Próximo paso**: Iniciar Fase 3 (`REQ-05`, `REQ-06`): Integración de precios en euros con Storefront API, mínimos históricos con ITAD, valor total de cuenta y gráficas de distribución con Recharts.
 
 ---
 
@@ -21,12 +21,12 @@
 - [x] **API de Resolución**: Endpoint `/api/profile/resolve` que procesa vanity URL, URL completa o SteamID64 numérico (`@spec REQ-01`).
 
 ### Fase 2: Resumen del Perfil, Algoritmo de XP y Top de Juegos
-- [ ] **Cliente Steam Web API**: `GetPlayerSummaries`, `GetSteamLevel`, `GetBadges`, `GetOwnedGames`, `GetRecentlyPlayedGames` (`@spec REQ-02`, `RNF-02`).
-- [ ] **Algoritmo de XP y Nivel**: Implementación de la fórmula exacta de Steam y cálculo de progreso (`@spec REQ-03`).
-- [ ] **Tarjetas de Resumen**: Horas totales, horas recientes, desglose del *Pile of Shame* y porcentaje (`@spec REQ-02`).
-- [ ] **Top de Juegos**: Tabla con portadas oficiales, horas, precios y coste por hora (`@spec REQ-04`).
-- [ ] **Gestión de Perfiles Privados**: Detección de visibilidad y guía visual para hacer público el perfil (`@spec RNF-06`).
-- [ ] **Caché de Perfil**: TTL de 1 hora con botón de refresco y cooldown (`@spec RNF-02`).
+- [x] **Cliente Steam Web API**: `GetPlayerSummaries`, `GetSteamLevel`, `GetBadges`, `GetOwnedGames`, `GetRecentlyPlayedGames` (`@spec REQ-02`, `RNF-02`).
+- [x] **Algoritmo de XP y Nivel**: Implementación de la fórmula exacta de Steam y cálculo de progreso (`@spec REQ-03`).
+- [x] **Tarjetas de Resumen**: Horas totales, horas recientes, desglose del *Pile of Shame* y porcentaje (`@spec REQ-02`).
+- [x] **Top de Juegos**: Tabla con portadas oficiales, horas, precios y coste por hora (`@spec REQ-04`).
+- [x] **Gestión de Perfiles Privados**: Detección de visibilidad y guía visual para hacer público el perfil (`@spec RNF-06`).
+- [x] **Caché de Perfil**: TTL de 1 hora con botón de refresco y cooldown (`@spec RNF-02`).
 
 ### Fase 3: Precios de Tienda, IsThereAnyDeal y Valor de Cuenta
 - [ ] **Cliente Storefront API de Steam**: Precios en euros (`cc=es`) con cola de ritmo y *backoff* (`@spec REQ-05`, `RNF-02`).
