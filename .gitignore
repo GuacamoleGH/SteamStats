@@ -36,6 +36,7 @@ pnpm-debug.log*
 # Testing & Coverage
 /coverage
 .nyc_output
+*.tsbuildinfo
 
 # Editor and OS
 .DS_Store

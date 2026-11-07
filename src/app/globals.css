@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================================
+   SteamStats — Global Styles & GuacamoleGH Design Tokens
+   Copyright (c) 2026 GuacamoleGH
+   Licensed under the MIT License. See LICENSE for details.
+   Built with dbv-specs-ops · https://github.com/davidbuenov/dbv-specs-ops
+   ============================================================================= */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --bg-deep: #080b11;
+    --bg-base: #0c0e12;
+    --bg-surface: #12151b;
+    --bg-surface-card: #181d26;
+    --bg-surface-card-hover: #1f2532;
+    --border-subtle: #222a38;
+    --accent-green: #00f59b;
+    --accent-turquoise: #00d9c4;
+    --text-primary: #f0f4f8;
+    --text-secondary: #94a3b8;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-deep);
+    color: var(--text-primary);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg-deep);
+    background-image: radial-gradient(circle at 50% 0%, rgba(0, 245, 155, 0.05), transparent 50%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  /* Accessible focus indicators (WCAG AA) */
+  :focus-visible {
+    outline: 2px solid #00f59b !important;
+    outline-offset: 3px !important;
+    border-radius: 6px;
+  }
+
+  /* Subtle Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #080b11;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #334155;
+  }
+}

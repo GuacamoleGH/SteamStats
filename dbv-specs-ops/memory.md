@@ -34,6 +34,7 @@
 
 ## ⚠️ Lecciones Aprendidas
 
+- *(2026-11-07)*: En entornos Windows sobre sistemas de archivos exFAT (como discos duros externos), `fs.readlink` lanza `EISDIR` en lugar de `EINVAL` para ficheros regulares, lo que hace fallar el snapshot resolver de Webpack en Next.js. Se solucionó con un hook ligero en `scripts/patch-exfat.js` activado con `--require` antes de ejecutar Next.js.
 - *(2026-11-07)*: En proyectos que consumen la Storefront API de Steam, es indispensable contemplar títulos gratuitos o retirados que no devuelven objeto `price_overview`, marcándolos con flags booleanos explícitos para no romper cálculos de valor total.
 
 ---

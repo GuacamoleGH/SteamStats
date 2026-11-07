@@ -4,21 +4,21 @@
 
 ## Contexto del Proyecto (Context Snapshot)
 * **Objetivo**: Desarrollar y desplegar `SteamStats` en el homelab personal de GuacamoleGH (`steamstats.guacamolegh.es`) mediante Docker Compose.
-* **Estado actual**: Fase `/spec` y `/plan` completadas y validadas; listo para comenzar la **Fase 1 (`/build`)**.
-* **Última decisión técnica**: Adopción formal del framework `dbv-specs-ops` v3.2.0 y separación de procesos en Docker (Next.js web + Worker node-cron).
-* **Próximo paso**: Iniciar la Fase 1 (`/build`): Configurar esqueleto Next.js 15, Tailwind con tokens de GuacamoleGH, Prisma SQLite, Docker y endpoint de resolución de SteamID (`REQ-01`, `RNF-01`).
+* **Estado actual**: Fase 1 (`/build`) completada y validada con Vitest y build de producción; listo para Fase 2 (Resumen del Perfil, Algoritmo de XP y Top de Juegos).
+* **Última decisión técnica**: Integración del arnés de compatibilidad Node.js exFAT en `scripts/patch-exfat.js` y configuración de `outputFileTracingRoot` para build reproducible de Next.js en Windows y Docker Linux.
+* **Próximo paso**: Iniciar Fase 2 (`REQ-02`, `REQ-03`, `REQ-04`, `REQ-07`): Cliente Steam Web API, tarjetas de resumen, regla matemática de XP e insignias.
 
 ---
 
 ## Checklist de Tareas por Fases
 
 ### Fase 1: Esqueleto del Proyecto, Docker, Tokens y Búsqueda de Perfil
-- [ ] **Configuración inicial**: Next.js 15 App Router, TypeScript estricto, Tailwind CSS con tokens de diseño GuacamoleGH (`@spec RNF-01`, `RNF-03`).
-- [ ] **Docker Compose y Dockerfile**: Contenedor web multi-stage y volumen para base de datos SQLite (`@spec RNF-01`).
-- [ ] **Prisma ORM**: Modelos de base de datos (`schema.prisma`) y cliente singleton (`@spec RNF-01`).
-- [ ] **Sistema de Layout y Diseño**: Header con logo oficial de GuacamoleGH y enlace directo al Hub (`hub.guacamolegh.es`), Footer estandarizado (`@spec RNF-03`).
-- [ ] **Buscador de Perfiles**: Componente de búsqueda en portada con atajo `/` o `Ctrl+K` (`@spec REQ-01`, `RNF-03`).
-- [ ] **API de Resolución**: Endpoint `/api/profile/resolve` que procesa vanity URL, URL completa o SteamID64 numérico (`@spec REQ-01`).
+- [x] **Configuración inicial**: Next.js 15 App Router, TypeScript estricto, Tailwind CSS con tokens de diseño GuacamoleGH (`@spec RNF-01`, `RNF-03`).
+- [x] **Docker Compose y Dockerfile**: Contenedor web multi-stage y volumen para base de datos SQLite (`@spec RNF-01`).
+- [x] **Prisma ORM**: Modelos de base de datos (`schema.prisma`) y cliente singleton (`@spec RNF-01`).
+- [x] **Sistema de Layout y Diseño**: Header con logo oficial de GuacamoleGH y enlace directo al Hub (`hub.guacamolegh.es`), Footer estandarizado (`@spec RNF-03`).
+- [x] **Buscador de Perfiles**: Componente de búsqueda en portada con atajo `/` o `Ctrl+K` (`@spec REQ-01`, `RNF-03`).
+- [x] **API de Resolución**: Endpoint `/api/profile/resolve` que procesa vanity URL, URL completa o SteamID64 numérico (`@spec REQ-01`).
 
 ### Fase 2: Resumen del Perfil, Algoritmo de XP y Top de Juegos
 - [ ] **Cliente Steam Web API**: `GetPlayerSummaries`, `GetSteamLevel`, `GetBadges`, `GetOwnedGames`, `GetRecentlyPlayedGames` (`@spec REQ-02`, `RNF-02`).

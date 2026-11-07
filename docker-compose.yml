@@ -1,0 +1,58 @@
+# =============================================================================
+# SteamStats — Docker Compose Setup
+# Copyright (c) 2026 GuacamoleGH
+# Licensed under the MIT License. See LICENSE for details.
+# Built with dbv-specs-ops · https://github.com/davidbuenov/dbv-specs-ops
+# =============================================================================
+
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: steamstats-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/prisma/prod.db
+      - STEAM_API_KEY=${STEAM_API_KEY}
+      - ITAD_API_KEY=${ITAD_API_KEY}
+      - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
+      - IGDB_CLIENT_SECRET=${IGDB_CLIENT_SECRET}
+      - NEXT_PUBLIC_HUB_URL=${NEXT_PUBLIC_HUB_URL:-https://hub.guacamolegh.es}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://steamstats.guacamolegh.es}
+    volumes:
+      - steamstats-data:/app/prisma
+    networks:
+      - steamstats-net
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: steamstats-worker
+    restart: unless-stopped
+    command: ["node", "worker/dist/index.js"]
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/prisma/prod.db
+      - STEAM_API_KEY=${STEAM_API_KEY}
+      - ITAD_API_KEY=${ITAD_API_KEY}
+    volumes:
+      - steamstats-data:/app/prisma
+    depends_on:
+      - web
+    networks:
+      - steamstats-net
+
+volumes:
+  steamstats-data:
+    driver: local
+
+networks:
+  steamstats-net:
+    driver: bridge

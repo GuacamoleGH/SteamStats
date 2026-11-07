@@ -1,0 +1,126 @@
+// =============================================================================
+// SteamStats — Prisma Schema
+// Copyright (c) 2026 GuacamoleGH
+// Licensed under the MIT License. See LICENSE for details.
+// Built with dbv-specs-ops · https://github.com/davidbuenov/dbv-specs-ops
+// =============================================================================
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Perfil de Steam consultado y cacheado
+model SteamProfile {
+  steamId              String               @id // SteamID64 (ej: 76561198337759875)
+  vanityUrl            String?              // ej: "GuacamoleSteam"
+  personaName          String
+  avatarUrl            String
+  avatarMediumUrl      String?
+  avatarFullUrl        String?
+  profileUrl           String
+  timeCreated          DateTime?
+  countryCode          String?
+  steamLevel           Int                  @default(0)
+  totalPlaytimeMinutes Int                  @default(0)
+  isPrivate            Boolean              @default(false)
+  lastUpdated          DateTime             @default(now())
+  createdAt            DateTime             @default(now())
+
+  // Relaciones
+  ownedGames           ProfileOwnedGame[]
+  snapshots            OwnedGameSnapshot[]
+  badges               ProfileBadge[]
+
+  @@index([vanityUrl])
+  @@index([lastUpdated])
+}
+
+// Relación entre un perfil y los juegos de su biblioteca
+model ProfileOwnedGame {
+  id                   String        @id @default(cuid())
+  steamId              String
+  appId                Int
+  playtimeForeverMin   Int           @default(0)
+  playtime2WeeksMin    Int           @default(0)
+  lastPlayedTime       DateTime?
+  hasPlayed            Boolean       @default(false)
+
+  profile              SteamProfile  @relation(fields: [steamId], references: [steamId], onDelete: Cascade)
+  game                 GameCache     @relation(fields: [appId], references: [appId], onDelete: Cascade)
+
+  @@unique([steamId, appId])
+  @@index([steamId])
+  @@index([appId])
+}
+
+// Caché centralizada de información y precios de juegos
+model GameCache {
+  appId                Int                  @id // Steam AppID
+  name                 String
+  headerImage          String?
+  isFree               Boolean              @default(false)
+  isDelisted           Boolean              @default(false)
+  currentPriceCents    Int?                 // En céntimos de euro (ej: 1999 = 19,99 €)
+  initialPriceCents    Int?                 // Precio base antes de rebaja
+  discountPercent      Int                  @default(0)
+  lowestPriceCents     Int?                 // Mínimo histórico (IsThereAnyDeal)
+  lowestPriceDate      DateTime?
+  priceUpdatedAt       DateTime?
+  createdAt            DateTime             @default(now())
+
+  profileGames         ProfileOwnedGame[]
+  snapshots            OwnedGameSnapshot[]
+
+  @@index([priceUpdatedAt])
+  @@index([name])
+}
+
+// Instantáneas diarias para generar el Heatmap de actividad
+model OwnedGameSnapshot {
+  id                   String        @id @default(cuid())
+  steamId              String
+  appId                Int
+  playtimeForeverMin   Int           // Minutos totales en el momento del snapshot
+  snapshotDate         DateTime      // Truncado a día YYYY-MM-DD
+
+  profile              SteamProfile  @relation(fields: [steamId], references: [steamId], onDelete: Cascade)
+  game                 GameCache     @relation(fields: [appId], references: [appId], onDelete: Cascade)
+
+  @@unique([steamId, appId, snapshotDate])
+  @@index([steamId, snapshotDate])
+}
+
+// Insignias del perfil
+model ProfileBadge {
+  id                   String        @id @default(cuid())
+  steamId              String
+  badgeId              Int
+  level                Int           @default(1)
+  completionTime       DateTime?
+  xp                   Int           @default(0)
+  scarcity             Int?
+
+  profile              SteamProfile  @relation(fields: [steamId], references: [steamId], onDelete: Cascade)
+
+  @@unique([steamId, badgeId])
+  @@index([steamId])
+}
+
+// Lanzamientos cacheados de IGDB
+model Release {
+  id                   Int           @id // ID en IGDB
+  name                 String
+  summary              String?
+  coverUrl             String?
+  releaseDate          DateTime
+  platforms            String        // JSON array serializado de nombres
+  genres               String        // JSON array serializado de géneros
+  lastUpdated          DateTime      @default(now())
+
+  @@index([releaseDate])
+}
