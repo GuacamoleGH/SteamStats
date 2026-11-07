@@ -47,6 +47,9 @@
 - [ ] **REQ-12 · Herramientas Auxiliares de Steam:**
   - Conversor de identificadores de Steam (SteamID64, SteamID3, SteamID2, AccountID).
   - Ruleta / selector aleatorio de juego de la biblioteca ("¿A qué juego hoy?") con filtros rápidos.
+- [ ] **REQ-13 · Rastreador de Logros y Platinos (Achievements Tracker):** Consultar el progreso de logros de los juegos del perfil, calcular el ratio de completitud global y por título, y resaltar los juegos completados al 100% (*perfect games* / platinos).
+- [ ] **REQ-14 · Generador de Tarjeta de Perfil / Banner Compartible:** Generar una tarjeta gráfica resumen del perfil (avatar, nivel, valor total de cuenta, horas totales, porcentaje de *pile of shame* y juego más jugado) con opción de copia al portapapeles y descarga en PNG nativo.
+- [ ] **REQ-15 · Exportador de Biblioteca (CSV y JSON):** Permitir al usuario descargar su biblioteca analizada con todos sus campos (appId, nombre, horas jugadas, precio en euros y coste por hora) en formatos estándar CSV y JSON.
 
 ---
 

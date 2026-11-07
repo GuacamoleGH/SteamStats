@@ -18,6 +18,8 @@ import { AccountValueCard } from '@/components/stats/AccountValueCard';
 import { PlaytimeDistributionChart } from '@/components/charts/PlaytimeDistributionChart';
 import { PriceDistributionChart } from '@/components/charts/PriceDistributionChart';
 import { ActivityHeatmap } from '@/components/profile/ActivityHeatmap';
+import { AchievementsSection } from '@/components/profile/AchievementsSection';
+import { getProfileAchievements } from '@/lib/steam/achievements';
 
 interface ProfilePageProps {
   params: Promise<{
@@ -34,6 +36,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   } catch (err) {
     notFound();
   }
+
+  const achievementsData = await getProfileAchievements(
+    profileData.steamId,
+    profileData.topGames
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-1">
@@ -84,6 +91,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
       {/* Top 10 Juegos Más Jugados con Coste/Hora */}
       <TopGamesTable games={profileData.topGames} />
+
+      {/* Rastreador de Logros y Platinos (@spec REQ-13) */}
+      <AchievementsSection data={achievementsData} />
 
       {/* Insignias Coleccionadas */}
       <BadgesSection badges={profileData.badges} />

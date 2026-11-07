@@ -50,6 +50,9 @@ Desarrollada bajo la metodología **Spec-Driven Development (SDD)** con el frame
 - ⏳ **Cuenta atrás de rebajas:** Temporizador en tiempo real a las próximas grandes rebajas de Steam (`data/sales.json`) ajustado a la zona horaria del visitante.
 - 🔥 **Heatmap de actividad:** Capturas diarias automatizadas mediante un proceso *worker* en segundo plano.
 - ⚖️ **Comparador de perfiles:** Comparativa lado a lado de dos bibliotecas, juegos en común y horas compartidas.
+- 🏆 **Rastreador de logros y platinos:** Tasa de completitud por título, total de logros y juegos completados al 100%.
+- 📸 **Tarjeta de perfil compartible:** Generador de banner en alta resolución (1200x630) descargable en PNG nativo para Discord y redes.
+- 📥 **Exportador de biblioteca:** Descarga directa de la colección analizada con precios y horas en formato CSV y JSON.
 - 🎲 **Herramientas extra:** Conversor de formatos SteamID (ID64, ID3, ID2, AccountID) y ruleta aleatoria de biblioteca.
 
 ---

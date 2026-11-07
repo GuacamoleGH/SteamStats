@@ -78,6 +78,7 @@ export interface CompleteProfileData {
   distributions: DistributionsData;
   topGames: ProfileGameItem[];
   recentGames: ProfileGameItem[];
+  allGames: ProfileGameItem[];
   badges: ProfileBadgeItem[];
   lastUpdated: Date;
   isCached: boolean;
@@ -414,6 +415,7 @@ function formatProfileFromDb(profile: any, isCached: boolean): CompleteProfileDa
     distributions,
     topGames,
     recentGames,
+    allGames: games,
     badges,
     lastUpdated: profile.lastUpdated,
     isCached,

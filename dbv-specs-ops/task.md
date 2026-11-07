@@ -61,6 +61,12 @@
 - [x] **Agent Readiness**: Archivos `robots.txt`, `llms.txt`, `auth.md` y metadatos (`@spec RNF-IA-01`).
 - [x] **Verificación Docker Compose**: Despliegue y verificación local completa (`@spec RNF-01`).
 
+### Fase 8: Logros, Tarjeta Compartible y Exportador de Biblioteca
+- [x] **Exportador de Biblioteca (CSV / JSON)**: Utilidad de transformación y botones de descarga directa en perfil (`@spec REQ-15`).
+- [x] **Rastreador de Logros y Platinos**: Endpoint y componente UI con ratio de completitud y juegos completados al 100% (`@spec REQ-13`).
+- [x] **Tarjeta de Perfil Compartible**: Generador de tarjeta visual estilo OpenGraph / banner PNG descargable para redes (`@spec REQ-14`).
+- [x] **Tests Unitarios de Fase 8**: Cobertura con Vitest en `tests/export.test.ts` y `tests/achievements.test.ts` (`@spec RNF-01`).
+
 ---
 
 ## Deuda Técnica
@@ -71,6 +77,6 @@
 ## 🔄 Context Snapshot / Snapshot de Contexto
 
 > **Last update / Última actualización:** 2026-11-08  
-> **Exact point / Punto exacto:** Fase 7 completada y validada al 100%. Todas las fases del backlog (Fases 1 a 7) implementadas, testeadas con Vitest (46/46 tests pasando) y documentadas.  
-> **Pending / Pendiente:** Ninguna tarea técnica pendiente. Listo para puesta en marcha y uso en producción en el homelab (`steamstats.guacamolegh.es`).  
-> **Next step / Próximo paso:** Entrega final al usuario y cierre de ciclo SDD.
+> **Exact point / Punto exacto:** Fase 8 completada y verificada al 100%. Total de 51 tests unitarios pasando en Vitest y build estático de Next.js generado sin errores.  
+> **Pending / Pendiente:** Ninguna tarea técnica pendiente.  
+> **Next step / Próximo paso:** Entrega al usuario y opciones de despliegue en servidor.

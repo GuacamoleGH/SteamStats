@@ -9,8 +9,10 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ExternalLink, RefreshCw, Calendar, MapPin, Award, CheckCircle2 } from 'lucide-react';
+import { ExternalLink, RefreshCw, Calendar, MapPin, Award, CheckCircle2, Share2 } from 'lucide-react';
 import { CompleteProfileData } from '@/lib/steam/api';
+import { ExportMenu } from './ExportMenu';
+import { ProfileShareModal } from './ProfileShareModal';
 
 interface ProfileHeaderProps {
   data: CompleteProfileData;
@@ -20,6 +22,7 @@ interface ProfileHeaderProps {
 export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, onRefresh }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [refreshMsg, setRefreshMsg] = useState<string | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const handleRefreshClick = async () => {
     if (refreshing || !onRefresh) return;
@@ -98,7 +101,33 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, onRefresh })
             </div>
 
             {/* Acciones */}
-            <div className="flex items-center justify-center md:justify-end gap-2.5 shrink-0">
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2.5 shrink-0">
+              {/* Botón Compartir Tarjeta (@spec REQ-14) */}
+              <button
+                type="button"
+                onClick={() => setShareModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-guacamole-500/10 hover:bg-guacamole-500/20 text-guacamole-400 border border-guacamole-400/30 hover:border-guacamole-400 transition-all cursor-pointer shadow-sm"
+                title="Compartir o descargar tarjeta resumen del perfil"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>Tarjeta</span>
+              </button>
+
+              {/* Menú de Exportación CSV / JSON (@spec REQ-15) */}
+              <ExportMenu
+                profile={{
+                  steamId64: data.steamId,
+                  personaName: data.personaName,
+                }}
+                games={(data.allGames || data.topGames).map((g) => ({
+                  appId: g.appId,
+                  name: g.name,
+                  playtimeForeverMin: g.playtimeForeverMin,
+                  priceEurCents: g.currentPriceCents,
+                  isFree: g.isFree,
+                }))}
+              />
+
               {/* Botón Refrescar */}
               <button
                 type="button"
@@ -143,6 +172,23 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, onRefresh })
           )}
         </div>
       </div>
+
+      {/* Modal de Tarjeta Compartible (@spec REQ-14) */}
+      <ProfileShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        profile={{
+          steamId: data.steamId,
+          personaName: data.personaName,
+          avatarUrl: data.avatarFullUrl || data.avatarUrl,
+          steamLevel: data.steamLevel,
+          totalPlaytimeHours: data.stats.totalPlaytimeHours,
+          totalValueEur: data.accountValue.totalCurrentEur,
+          unplayedPercentage: data.stats.unplayedPercentage,
+          topGameName: data.topGames[0]?.name,
+          topGameHours: data.topGames[0]?.playtimeForeverHours,
+        }}
+      />
     </div>
   );
 };

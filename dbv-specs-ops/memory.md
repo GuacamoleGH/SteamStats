@@ -50,6 +50,10 @@
 - **Decisión:** Establecer una política de "Zero-Config First Run" donde la aplicación arranca y opera al 100% sin exigir claves externas al usuario gracias a fixtures realistas (`GuacamoleSteam`), catálogo curado de lanzamientos y lectura directa de `sales.json`. Implementar estándares de Agent Discovery (`robots.txt`, `llms.txt`, `docs/auth.md`) y contrastes WCAG AA.
 - **Motivo:** Cumplir `RNF-01`, `RNF-03` y `RNF-IA-01`, facilitando la auditoría tanto por humanos como por agentes de inteligencia artificial y garantizando la puesta en marcha inmediata en el homelab.
 
+### ADR-11 (2026-11-08) · Logros, Platinos, Exportación y Tarjeta Gráfica en Canvas
+- **Decisión:** Para la generación de la tarjeta gráfica descargable (`REQ-14`), usar renderizado vectorial directo en un elemento `<canvas>` HTML5 con monograma y gradientes neón nativos en lugar de dependencias pesadas de servidor o renderizado que sufra bloqueo por CORS con imágenes externas. Para la exportación de biblioteca (`REQ-15`), generar descargas cliente RFC 4180 (CSV) y JSON tipado. Para logros (`REQ-13`), calcular métricas de completitud y destacar los juegos completados al 100% (*perfect games* / platinos).
+- **Motivo:** Cumplir `REQ-13`, `REQ-14` y `REQ-15` con máxima ligereza en el navegador y cero riesgo de "tainted canvas".
+
 ---
 
 ## ⚠️ Lecciones Aprendidas
