@@ -1,0 +1,29 @@
+[
+  {
+    "id": "steam-autumn-sale-2026",
+    "name": "Rebajas de Otoño de Steam 2026",
+    "nameEn": "Steam Autumn Sale 2026",
+    "startDate": "2026-11-24T18:00:00Z",
+    "endDate": "2026-12-01T18:00:00Z",
+    "type": "major",
+    "description": "Las grandes rebajas de otoño de Steam con miles de descuentos en todo el catálogo."
+  },
+  {
+    "id": "steam-winter-sale-2026",
+    "name": "Rebajas de Invierno de Steam 2026",
+    "nameEn": "Steam Winter Sale 2026",
+    "startDate": "2026-12-17T18:00:00Z",
+    "endDate": "2027-01-07T18:00:00Z",
+    "type": "major",
+    "description": "El evento de descuentos más esperado del año con cromos especiales, premios Steam y ofertas históricas."
+  },
+  {
+    "id": "steam-spring-sale-2027",
+    "name": "Rebajas de Primavera de Steam 2027",
+    "nameEn": "Steam Spring Sale 2027",
+    "startDate": "2027-03-18T17:00:00Z",
+    "endDate": "2027-03-25T17:00:00Z",
+    "type": "major",
+    "description": "Descuentos de primavera para renovar tu biblioteca de juegos en Steam."
+  }
+]
