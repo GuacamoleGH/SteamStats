@@ -17,6 +17,7 @@ import { PrivateProfileAlert } from '@/components/profile/PrivateProfileAlert';
 import { AccountValueCard } from '@/components/stats/AccountValueCard';
 import { PlaytimeDistributionChart } from '@/components/charts/PlaytimeDistributionChart';
 import { PriceDistributionChart } from '@/components/charts/PriceDistributionChart';
+import { ActivityHeatmap } from '@/components/profile/ActivityHeatmap';
 
 interface ProfilePageProps {
   params: Promise<{
@@ -77,6 +78,9 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         <PlaytimeDistributionChart data={profileData.distributions.playtimeBuckets} />
         <PriceDistributionChart data={profileData.distributions.priceBuckets} />
       </div>
+
+      {/* Heatmap de Actividad Anual (Estilo GitHub) */}
+      <ActivityHeatmap steamId={profileData.steamId} />
 
       {/* Top 10 Juegos Más Jugados con Coste/Hora */}
       <TopGamesTable games={profileData.topGames} />

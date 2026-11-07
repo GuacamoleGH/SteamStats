@@ -4,9 +4,9 @@
 
 ## Contexto del Proyecto (Context Snapshot)
 * **Objetivo**: Desarrollar y desplegar `SteamStats` en el homelab personal de GuacamoleGH (`steamstats.guacamolegh.es`) mediante Docker Compose.
-* **Estado actual**: Fase 3 completada y validada; listo para Fase 4 (Snapshots diarios del worker con node-cron y Heatmap de actividad estilo GitHub).
-* **Última decisión técnica**: Cálculo financiero en euros (es-ES) de valor actual, mínimos históricos, coste por hora interactivo en 3 modos (todos, de pago, jugados), y distribuciones de Recharts para horas y precios con 21 tests unitarios en Vitest.
-* **Próximo paso**: Iniciar Fase 4 (`REQ-08`): Implementar el worker programado (`node-cron`), snapshots en SQLite (`OwnedGameSnapshot`) y heatmap anual estilo GitHub con filtro por juego.
+* **Estado actual**: Fase 4 completada y validada; listo para Fase 5 (Calendario de lanzamientos con IGDB y Cuenta atrás de rebajas con `data/sales.json`).
+* **Última decisión técnica**: Worker autónomo con `node-cron` que captura instantáneas diarias en `OwnedGameSnapshot`, endpoint `/api/profile/[steamid]/heatmap` que calcula actividad por diferencias diarias entre snapshots, y cuadrícula anual interactiva de 52 semanas en tonos verdes Guacamole con filtro por juego y estado vacío explicativo.
+* **Próximo paso**: Iniciar Fase 5 (`REQ-10`, `REQ-11`): Integración de lanzamientos con API de IGDB/Twitch, botón de favoritos local y temporizador dinámico de rebajas de Steam basado en `data/sales.json`.
 
 ---
 
@@ -37,9 +37,10 @@
 - [x] **Tests Unitarios de Precios**: Cobertura con Vitest en `tests/pricing.test.ts` (`@spec RNF-01`).
 
 ### Fase 4: Snapshots Diarios y Heatmap de Actividad
-- [ ] **Proceso Worker**: Script autónomo con `node-cron` para captura periódica de minutos por juego (`@spec REQ-08`, `RNF-01`).
-- [ ] **Endpoint Heatmap**: `/api/profile/[steamid]/heatmap` con cálculo de actividad por diferencia diaria (`@spec REQ-08`).
-- [ ] **Componente Heatmap**: Cuadrícula de actividad anual interactiva en verde Guacamole con filtro por juego individual (`@spec REQ-08`).
+- [x] **Proceso Worker**: Script autónomo con `node-cron` para captura periódica de minutos por juego (`@spec REQ-08`, `RNF-01`).
+- [x] **Endpoint Heatmap**: `/api/profile/[steamid]/heatmap` con cálculo de actividad por diferencia diaria (`@spec REQ-08`).
+- [x] **Componente Heatmap**: Cuadrícula de actividad anual interactiva en verde Guacamole con filtro por juego individual (`@spec REQ-08`).
+- [x] **Tests Unitarios del Heatmap**: Cobertura con Vitest en `tests/heatmap.test.ts` (`@spec RNF-01`).
 
 ### Fase 5: Calendario de Lanzamientos y Cuenta Atrás de Rebajas
 - [ ] **Integración IGDB**: Autenticación Twitch OAuth y consulta de próximos lanzamientos (`@spec REQ-10`).
@@ -67,6 +68,6 @@
 ## 🔄 Context Snapshot / Snapshot de Contexto
 
 > **Last update / Última actualización:** 2026-11-07  
-> **Exact point / Punto exacto:** Fase 3 (Precios, valor de cuenta y distribuciones Recharts) completada y validada en local. Dev server corriendo en http://localhost:3000.  
-> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 4 (Snapshots diarios y Heatmap).  
-> **Next step / Próximo paso:** Implementar el worker con `node-cron`, endpoint de heatmap y componente visual estilo GitHub.
+> **Exact point / Punto exacto:** Fase 4 (Worker de snapshots diarios, endpoint heatmap y componente de cuadrícula anual estilo GitHub) completada y validada en local.  
+> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 5 (Calendario de lanzamientos IGDB y Cuenta atrás de rebajas).  
+> **Next step / Próximo paso:** Implementar integración IGDB con Twitch OAuth y temporizador dinámico de rebajas de Steam con `data/sales.json`.

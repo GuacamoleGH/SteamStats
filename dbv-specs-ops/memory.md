@@ -34,6 +34,10 @@
 - **Decisión:** Modelar las finanzas de la cuenta en tres métricas de coste por hora amortizado (todos los juegos, solo de pago, solo jugados) con formato de moneda estándar en España (`es-ES`, euros €). Representar la segmentación de tiempo en 8 tramos y de precio en 7 tramos con Recharts en Server Components hijos (`'use client'`).
 - **Motivo:** Cumplir `REQ-05`, `REQ-06` y `RNF-05` ofreciendo al usuario una perspectiva clara de amortización de su gasto en videojuegos similar a SteamDB.
 
+### ADR-07 (2026-11-07) · Generación de Actividad Diaria por Diferencia de Snapshots (Heatmap)
+- **Decisión:** En lugar de intentar deducir sesiones de juego por llamadas de sondeo continuo en tiempo real, almacenar una instantánea diaria a medianoche de `playtimeForeverMin` por juego en `OwnedGameSnapshot`. El backend calcula dinámicamente las horas del día evaluando $\Delta = S_{\text{hoy}} - S_{\text{ayer}}$, permitiendo al usuario además aislar la actividad de un juego individual con el selector de filtrado.
+- **Motivo:** Cumplir `REQ-08` respetando la política de no saturación de la API de Steam y permitiendo una reconstrucción fiel del historial a lo largo de 365 días en una cuadrícula anual estilo GitHub.
+
 ---
 
 ## ⚠️ Lecciones Aprendidas
