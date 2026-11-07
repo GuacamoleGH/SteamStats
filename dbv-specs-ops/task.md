@@ -4,9 +4,9 @@
 
 ## Contexto del Proyecto (Context Snapshot)
 * **Objetivo**: Desarrollar y desplegar `SteamStats` en el homelab personal de GuacamoleGH (`steamstats.guacamolegh.es`) mediante Docker Compose.
-* **Estado actual**: Fase 4 completada y validada; listo para Fase 5 (Calendario de lanzamientos con IGDB y Cuenta atrás de rebajas con `data/sales.json`).
-* **Última decisión técnica**: Worker autónomo con `node-cron` que captura instantáneas diarias en `OwnedGameSnapshot`, endpoint `/api/profile/[steamid]/heatmap` que calcula actividad por diferencias diarias entre snapshots, y cuadrícula anual interactiva de 52 semanas en tonos verdes Guacamole con filtro por juego y estado vacío explicativo.
-* **Próximo paso**: Iniciar Fase 5 (`REQ-10`, `REQ-11`): Integración de lanzamientos con API de IGDB/Twitch, botón de favoritos local y temporizador dinámico de rebajas de Steam basado en `data/sales.json`.
+* **Estado actual**: Fase 5 completada y validada; listo para Fase 6 (Comparador de perfiles lado a lado y herramientas auxiliares).
+* **Última decisión técnica**: Integración de lanzamientos de videojuegos de IGDB con Twitch OAuth y fallback resiliente en SQLite/fixtures, filtros por mes y género con deseados guardados en localStorage, y cuenta atrás en tiempo real a las rebajas de Steam con detección de evento activo y hora local del visitante.
+* **Próximo paso**: Iniciar Fase 6 (`REQ-09`, `REQ-12`): Implementar vista de comparación de dos perfiles `/compare` con cálculo de juegos compartidos, conversor de formatos SteamID y ruleta aleatoria de juegos de la biblioteca.
 
 ---
 
@@ -43,9 +43,10 @@
 - [x] **Tests Unitarios del Heatmap**: Cobertura con Vitest en `tests/heatmap.test.ts` (`@spec RNF-01`).
 
 ### Fase 5: Calendario de Lanzamientos y Cuenta Atrás de Rebajas
-- [ ] **Integración IGDB**: Autenticación Twitch OAuth y consulta de próximos lanzamientos (`@spec REQ-10`).
-- [ ] **Página de Lanzamientos**: Vista `/releases` con portadas, filtros de mes/género y persistencia de favoritos (`@spec REQ-10`).
-- [ ] **Cuenta Atrás de Rebajas**: Lectura de `data/sales.json` y temporizador dinámico en portada y `/sales` ajustado a zona horaria (`@spec REQ-11`).
+- [x] **Integración IGDB**: Autenticación Twitch OAuth, persistencia en SQLite (`Release`) y catálogo resiliente (`@spec REQ-10`).
+- [x] **Página de Lanzamientos**: Vista `/releases` con portadas, filtros por mes y género, buscador en vivo y deseados persistidos en navegador (`@spec REQ-10`).
+- [x] **Cuenta Atrás de Rebajas**: Lectura de `data/sales.json`, temporizador en tiempo real a las 10:00 PST / 19:00 España con zona horaria del visitante y barra de progreso de evento activo (`@spec REQ-11`).
+- [x] **Tests Unitarios de Lanzamientos y Rebajas**: Cobertura con Vitest en `tests/sales.test.ts` y `tests/igdb.test.ts` (`@spec RNF-01`).
 
 ### Fase 6: Comparador de Perfiles y Herramientas Auxiliares
 - [ ] **Comparador de Bibliotecas**: Vista `/compare` con comparación lado a lado y juegos compartidos (`@spec REQ-09`).
@@ -67,7 +68,7 @@
 
 ## 🔄 Context Snapshot / Snapshot de Contexto
 
-> **Last update / Última actualización:** 2026-11-07  
-> **Exact point / Punto exacto:** Fase 4 (Worker de snapshots diarios, endpoint heatmap y componente de cuadrícula anual estilo GitHub) completada y validada en local.  
-> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 5 (Calendario de lanzamientos IGDB y Cuenta atrás de rebajas).  
-> **Next step / Próximo paso:** Implementar integración IGDB con Twitch OAuth y temporizador dinámico de rebajas de Steam con `data/sales.json`.
+> **Last update / Última actualización:** 2026-11-08  
+> **Exact point / Punto exacto:** Fase 5 (Calendario de lanzamientos IGDB, deseados en localStorage y cuenta atrás de rebajas en tiempo real con zona horaria) completada y validada en local.  
+> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 6 (Comparador de perfiles y herramientas auxiliares).  
+> **Next step / Próximo paso:** Implementar la vista `/compare` para comparar dos bibliotecas de Steam y herramientas de conversión de SteamID y juego aleatorio.

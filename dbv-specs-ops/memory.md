@@ -38,6 +38,10 @@
 - **Decisión:** En lugar de intentar deducir sesiones de juego por llamadas de sondeo continuo en tiempo real, almacenar una instantánea diaria a medianoche de `playtimeForeverMin` por juego en `OwnedGameSnapshot`. El backend calcula dinámicamente las horas del día evaluando $\Delta = S_{\text{hoy}} - S_{\text{ayer}}$, permitiendo al usuario además aislar la actividad de un juego individual con el selector de filtrado.
 - **Motivo:** Cumplir `REQ-08` respetando la política de no saturación de la API de Steam y permitiendo una reconstrucción fiel del historial a lo largo de 365 días en una cuadrícula anual estilo GitHub.
 
+### ADR-08 (2026-11-08) · Resiliencia Híbrida para Lanzamientos (IGDB) y Rebajas
+- **Decisión:** La consulta de próximos lanzamientos combina sincronización con Twitch OAuth + IGDB API con caché en SQLite (`Release`), recurriendo a un catálogo curado de respaldo en `CURATED_UPCOMING_RELEASES` si no hay credenciales o ante caídas de red. La cuenta atrás de rebajas lee directamente `data/sales.json`, calculando la diferencia a las 10:00 PST (19:00 España) y ajustando la visualización a la zona horaria del visitante sin desfase de hidratación SSR.
+- **Motivo:** Garantizar que la aplicación funcione inmediatamente en local o entornos de desarrollo sin requerir forzosamente claves de Twitch, y respetar `REQ-10` y `REQ-11`.
+
 ---
 
 ## ⚠️ Lecciones Aprendidas
