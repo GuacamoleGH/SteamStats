@@ -10,7 +10,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutGrid, Menu, X, Flame, Calendar, GitCompare, Sparkles } from 'lucide-react';
+import { LayoutGrid, Menu, X, Flame, Calendar, GitCompare, Sparkles, Wrench } from 'lucide-react';
 
 /**
  * @fileoverview Cabecera sticky accesible con identidad GuacamoleGH y enlace al Hub.
@@ -28,6 +28,7 @@ export const Header: React.FC = () => {
     { href: '/sales', label: 'Rebajas', icon: Flame },
     { href: '/releases', label: 'Lanzamientos', icon: Calendar },
     { href: '/compare', label: 'Comparar', icon: GitCompare },
+    { href: '/tools', label: 'Herramientas', icon: Wrench },
   ];
 
   return (

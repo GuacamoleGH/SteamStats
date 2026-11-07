@@ -4,9 +4,9 @@
 
 ## Contexto del Proyecto (Context Snapshot)
 * **Objetivo**: Desarrollar y desplegar `SteamStats` en el homelab personal de GuacamoleGH (`steamstats.guacamolegh.es`) mediante Docker Compose.
-* **Estado actual**: Fase 5 completada y validada; listo para Fase 6 (Comparador de perfiles lado a lado y herramientas auxiliares).
-* **Última decisión técnica**: Integración de lanzamientos de videojuegos de IGDB con Twitch OAuth y fallback resiliente en SQLite/fixtures, filtros por mes y género con deseados guardados en localStorage, y cuenta atrás en tiempo real a las rebajas de Steam con detección de evento activo y hora local del visitante.
-* **Próximo paso**: Iniciar Fase 6 (`REQ-09`, `REQ-12`): Implementar vista de comparación de dos perfiles `/compare` con cálculo de juegos compartidos, conversor de formatos SteamID y ruleta aleatoria de juegos de la biblioteca.
+* **Estado actual**: Fase 6 completada y validada; listo para Fase 7 (Pulido final, accesibilidad WCAG AA, agent readiness y despliegue Docker en servidor).
+* **Última decisión técnica**: Comparador cara a cara de perfiles con métricas de horas compartidas vs exclusivas, conversor universal de formatos SteamID mediante aritmética BigInt y ruleta interactiva de elección aleatoria con enlaces a cliente Steam `steam://run`.
+* **Próximo paso**: Iniciar Fase 7 (`RNF-01`, `RNF-03`, `RNF-IA-01`): Auditoría de accesibilidad WCAG AA, archivos de metadata y agent readiness (`llms.txt`, `robots.txt`), verificación final de Docker Compose y documentación en README.
 
 ---
 
@@ -49,9 +49,11 @@
 - [x] **Tests Unitarios de Lanzamientos y Rebajas**: Cobertura con Vitest en `tests/sales.test.ts` y `tests/igdb.test.ts` (`@spec RNF-01`).
 
 ### Fase 6: Comparador de Perfiles y Herramientas Auxiliares
-- [ ] **Comparador de Bibliotecas**: Vista `/compare` con comparación lado a lado y juegos compartidos (`@spec REQ-09`).
-- [ ] **Conversor de IDs**: Herramienta `/tools/converter` para formatos de SteamID (`@spec REQ-12`).
-- [ ] **Selector Aleatorio**: Ruleta interactiva de juegos de la biblioteca con filtros (`@spec REQ-12`).
+- [x] **Comparador de Bibliotecas**: Vista `/compare` y endpoint `/api/compare` con comparación cara a cara, juegos compartidos y exclusivos (`@spec REQ-09`).
+- [x] **Conversor de IDs**: Herramienta `/tools/converter` con motor BigInt bidireccional entre SteamID64, SteamID2, SteamID3 y AccountID (`@spec REQ-12`).
+- [x] **Selector Aleatorio**: Vista `/tools/random` con ruleta interactiva de juegos, filtros de tiempo y lanzamiento directo en cliente de Steam (`@spec REQ-12`).
+- [x] **Hub de Herramientas**: Vista `/tools` de navegación y enlace en la cabecera del sitio (`@spec RNF-03`).
+- [x] **Tests Unitarios de Comparación y Conversión**: Cobertura en `tests/compare.test.ts` y `tests/steamid-converter.test.ts` (`@spec RNF-01`).
 
 ### Fase 7: Pulido, Tests de Calidad y Despliegue
 - [ ] **Tests Unitarios (Vitest)**: Algoritmo de XP, conversor de IDs, formateadores de moneda `es-ES` y parseo de rebajas (`@spec RNF-01`).
@@ -69,6 +71,6 @@
 ## 🔄 Context Snapshot / Snapshot de Contexto
 
 > **Last update / Última actualización:** 2026-11-08  
-> **Exact point / Punto exacto:** Fase 5 (Calendario de lanzamientos IGDB, deseados en localStorage y cuenta atrás de rebajas en tiempo real con zona horaria) completada y validada en local.  
-> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 6 (Comparador de perfiles y herramientas auxiliares).  
-> **Next step / Próximo paso:** Implementar la vista `/compare` para comparar dos bibliotecas de Steam y herramientas de conversión de SteamID y juego aleatorio.
+> **Exact point / Punto exacto:** Fase 6 (Comparador de perfiles, conversor universal SteamID y ruleta aleatoria) completada y validada en local.  
+> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 7 (Pulido final, accesibilidad WCAG AA, agent readiness y despliegue Docker en servidor).  
+> **Next step / Próximo paso:** Implementar archivos de metadata (`robots.txt`, `llms.txt`), auditoría de accesibilidad WCAG AA, verificación de Docker y redacción final del README.
