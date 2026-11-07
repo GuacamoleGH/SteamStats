@@ -46,6 +46,10 @@
 - **Decisión:** Utilizar aritmética nativa `BigInt` para las transformaciones matemáticas entre `SteamID64` (entero de 64 bits con offset `76561197960265728n`), `SteamID2` (`STEAM_0:Y:Z`), `SteamID3` (`[U:1:W]`) y `AccountID` de 32 bits, protegiendo contra pérdida de precisión en números mayores a `2^53 - 1`. En el comparador de perfiles, analizar tanto juegos compartidos con desglose de liderazgo como títulos exclusivos.
 - **Motivo:** Cumplir `REQ-09` y `REQ-12` con máxima robustez numérica y velocidad de ejecución.
 
+### ADR-10 (2026-11-08) · Agent Readiness, WCAG AA y Despliegue con Fixtures Transparentes
+- **Decisión:** Establecer una política de "Zero-Config First Run" donde la aplicación arranca y opera al 100% sin exigir claves externas al usuario gracias a fixtures realistas (`GuacamoleSteam`), catálogo curado de lanzamientos y lectura directa de `sales.json`. Implementar estándares de Agent Discovery (`robots.txt`, `llms.txt`, `docs/auth.md`) y contrastes WCAG AA.
+- **Motivo:** Cumplir `RNF-01`, `RNF-03` y `RNF-IA-01`, facilitando la auditoría tanto por humanos como por agentes de inteligencia artificial y garantizando la puesta en marcha inmediata en el homelab.
+
 ---
 
 ## ⚠️ Lecciones Aprendidas

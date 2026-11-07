@@ -36,7 +36,7 @@ services:
       dockerfile: Dockerfile
     container_name: steamstats-worker
     restart: unless-stopped
-    command: ["node", "worker/dist/index.js"]
+    command: ["npx", "tsx", "worker/index.ts"]
     environment:
       - NODE_ENV=production
       - DATABASE_URL=file:/app/prisma/prod.db

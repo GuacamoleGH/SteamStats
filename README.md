@@ -18,9 +18,11 @@
 - [📌 Sobre el proyecto](#about)
 - [✨ Funcionalidades Clave](#features)
 - [🛠️ Stack Tecnológico](#stack)
+- [🔑 Configuración de APIs y Variables de Entorno](#apis)
 - [🧰 Requisitos Previos](#requirements)
 - [⚙️ Instalación y Uso Local](#usage)
-- [🐳 Despliegue con Docker](#docker)
+- [🐳 Despliegue con Docker (Homelab GuacamoleGH)](#docker)
+- [🤖 Agent Readiness y LLM Discovery](#agents)
 - [📂 Estructura del Proyecto](#structure)
 - [🧪 Pruebas y Calidad](#testing)
 - [📄 Licencia](#license)
@@ -65,16 +67,57 @@ Desarrollada bajo la metodología **Spec-Driven Development (SDD)** con el frame
 
 ---
 
+<a name="apis"></a>
+## 🔑 Configuración de APIs y Variables de Entorno
+
+SteamStats está diseñado con una arquitectura **resiliente**: la aplicación funciona al 100% en modo local incluso sin ninguna clave de API configurada, gracias a sus sistemas de respaldo y *fixtures* integrados.
+
+Para habilitar todas las funciones en vivo contra Valve e IGDB, consulta la guía detallada en [docs/auth.md](docs/auth.md) o revisa la siguiente tabla:
+
+| Variable | Servicio | Requerida | Cómo obtenerla | Comportamiento si no se configura |
+| :--- | :--- | :---: | :--- | :--- |
+| `STEAM_API_KEY` | Steam Web API | Recomendada | Gratuita en [steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey) | Usa el fixture completo de `GuacamoleSteam` (`76561198337759875`). Si buscas otro perfil, muestra un aviso guiado. |
+| *(Ninguna)* | Steam Storefront API | **No requerida** | Endpoint público oficial (`store.steampowered.com/api/appdetails?cc=es`) | Descarga precios en euros en tiempo real y los guarda en caché 24h. |
+| `ITAD_API_KEY` | IsThereAnyDeal | Opcional | Gratuita en [isthereanydeal.com](https://isthereanydeal.com) | Utiliza el precio actual de la tienda de Steam como mínimo histórico estimado. |
+| `IGDB_CLIENT_ID` | Twitch / IGDB API | Opcional | Gratuita en [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps) | Muestra el catálogo curado offline de grandes lanzamientos (`data/releases.json` / fixtures). |
+| `IGDB_CLIENT_SECRET` | Twitch OAuth | Opcional | Generable en la misma consola de Twitch | Complementa a `IGDB_CLIENT_ID` para autenticación OAuth2. |
+
+### Configuración Rápida del `.env`
+
+Copia la plantilla y rellena tus claves:
+
+```bash
+cp .env.example .env
+```
+
+```env
+# Base de datos
+DATABASE_URL="file:./dev.db"
+
+# Clave de desarrollador de Steam (Gratuita)
+STEAM_API_KEY="TU_CLAVE_STEAM"
+
+# IsThereAnyDeal (Opcional)
+ITAD_API_KEY=""
+
+# IGDB / Twitch (Opcional)
+IGDB_CLIENT_ID=""
+IGDB_CLIENT_SECRET=""
+
+# URLs del Ecosistema GuacamoleGH
+NEXT_PUBLIC_HUB_URL="https://hub.guacamolegh.es"
+NEXT_PUBLIC_SITE_URL="https://steamstats.guacamolegh.es"
+```
+
+---
+
 <a name="requirements"></a>
 ## 🧰 Requisitos Previos
 
-- **Node.js:** Versión 20.x o superior
+- **Node.js:** Versión 20.x o superior (desarrollo local)
 - **Gestor de paquetes:** `npm` (incluido con Node.js)
-- **Docker & Docker Compose:** Opcional para desarrollo local, requerido para producción
-- **Claves de API (en `.env`):**
-  - `STEAM_API_KEY`: Clave gratuita de la API de Steam
-  - `ITAD_API_KEY`: Clave de IsThereAnyDeal (opcional)
-  - `IGDB_CLIENT_ID` e `IGDB_CLIENT_SECRET`: Claves de Twitch/IGDB (opcional)
+- **Docker & Docker Compose:** Para despliegue contenerizado en homelab
+- **Claves de API:** Ver sección [Configuración de APIs](#apis) (o en [docs/auth.md](docs/auth.md))
 
 ---
 
@@ -108,17 +151,45 @@ La aplicación estará disponible en `http://localhost:3000`.
 ---
 
 <a name="docker"></a>
-## 🐳 Despliegue con Docker
+## 🐳 Despliegue con Docker (Homelab GuacamoleGH)
 
-Para desplegar localmente o en el servidor doméstico con Docker Compose:
+SteamStats incluye configuración lista para producción con Docker Compose, dividida en dos servicios:
+1. **`steamstats-web`**: Aplicación Next.js 15 compilada en modo *standalone*, optimizada para alto rendimiento y bajo consumo de memoria.
+2. **`steamstats-worker`**: Proceso ligero en segundo plano que ejecuta tareas programadas (`node-cron`) para capturar snapshots diarios a las 00:00 UTC.
+
+### Levantar los contenedores
 
 ```bash
-# Construir y levantar contenedores (web + worker)
+# 1. Asegúrate de tener tu archivo .env configurado
+# 2. Construir y levantar en segundo plano
 docker compose up -d --build
 
-# Ver logs
+# 3. Comprobar el estado y logs
+docker compose ps
 docker compose logs -f
 ```
+
+### Configuración de Reverse Proxy (Homelab)
+
+Para exponer el servicio en `https://steamstats.guacamolegh.es`:
+
+- **Cloudflare Tunnel (`cloudflared`):** Apunta el hostname `steamstats.guacamolegh.es` a `http://localhost:3000` (o `http://steamstats-web:3000` dentro de la red Docker).
+- **Traefik / Nginx Proxy Manager:** Reenvía el tráfico del puerto 80/443 al puerto `3000` del contenedor con cabeceras `Host`, `X-Real-IP`, `X-Forwarded-For` y `X-Forwarded-Proto`.
+
+El volumen `steamstats-data` garantiza la persistencia continua de la base de datos SQLite entre actualizaciones de los contenedores.
+
+---
+
+<a name="agents"></a>
+## 🤖 Agent Readiness y LLM Discovery
+
+SteamStats implementa las directrices de indexación semántica y compatibilidad con agentes autónomos e IAs generativas:
+
+- 📄 **`public/robots.txt`**: Permite la indexación de todas las páginas informativas y enlaza al manifiesto semántico.
+- 📋 **`public/llms.txt`**: Especificación estructurada del catálogo de rutas, parámetros de API, modelos de datos y fórmulas matemáticas (coste de XP y conversión de SteamID).
+- 🛡️ **`docs/auth.md`**: Guía técnica completa sobre gestión de tokens, cuotas de peticiones y estrategias de mitigación de errores para agentes.
+
+---
 
 ---
 

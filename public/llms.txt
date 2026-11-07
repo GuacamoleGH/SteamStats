@@ -1,0 +1,28 @@
+# SteamStats — Agent Discovery & LLM Guide
+> steamstats.guacamolegh.es · Ecosistema homelab GuacamoleGH
+
+## Resumen
+SteamStats es una aplicación web y API analítica para perfiles públicos de Steam. Proporciona cálculo financiero en euros (es-ES) del valor de la cuenta, tiempo de juego, pile of shame, nivel y XP de Steam, historial de actividad (heatmap estilo GitHub), comparador de perfiles, conversor de SteamID y calendario de rebajas y próximos estrenos.
+
+## Rutas Principales
+- `/`: Buscador interactivo de perfiles por vanity URL, SteamID64 o enlace.
+- `/id/[vanity]`: Redirección y resolución de nombres personalizados.
+- `/profile/[steamid]`: Vista analítica completa del perfil (resumen, finanzas, distribuciones Recharts, heatmap, top 10 juegos e insignias).
+- `/compare`: Comparativa lado a lado entre dos bibliotecas de juegos con cálculo de títulos en común y exclusivos.
+- `/sales`: Cuenta atrás en tiempo real a las próximas grandes rebajas de Steam (10:00 PST / 19:00 España) y estado de eventos activos.
+- `/releases`: Calendario de próximos lanzamientos de videojuegos sincronizado con IGDB, con filtros de mes/género y lista de deseados.
+- `/tools`: Catálogo de herramientas auxiliares.
+- `/tools/converter`: Conversor instantáneo entre SteamID64, SteamID2 (`STEAM_0:Y:Z`), SteamID3 (`[U:1:W]`) y AccountID de 32 bits.
+- `/tools/random`: Ruleta aleatoria para elegir a qué jugar con filtro para el pile of shame y enlace de arranque directo `steam://run`.
+
+## API Endpoints Públicos (JSON)
+- `GET /api/profile/resolve?q={input}`: Resuelve una URL, vanity o SteamID64 al SteamID64 numérico canónico de 17 dígitos.
+- `GET /api/profile/[steamid]`: Retorna estadísticas completas, valor de cuenta en euros, horas y desglose de juegos.
+- `GET /api/profile/[steamid]/heatmap?appId={optional}`: Retorna la cuadrícula de 365 días de actividad diaria calculada por diferencias entre snapshots.
+- `GET /api/compare?u1={profile1}&u2={profile2}`: Retorna métricas comparativas cara a cara entre dos cuentas de Steam.
+- `GET /api/releases`: Retorna próximos videojuegos con portadas, fechas, géneros y plataformas.
+
+## Reglas Matemáticas y Fórmulas
+- **Cálculo de XP de Steam**: El coste en XP de subir desde el nivel L es: $Coste = 100 \times (\lfloor L / 10 \rfloor + 1)$.
+- **Conversor de SteamID**: Offset base: $76561197960265728$. $AccountID = SteamID64 - Base$. $Y = AccountID \bmod 2$. $Z = \lfloor AccountID / 2 \rfloor$. $SteamID2 = \text{STEAM\_0:Y:Z}$.
+- **Moneda e Idioma**: Moneda por defecto: Euros (€) con localización española `es-ES`.

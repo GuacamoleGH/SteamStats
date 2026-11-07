@@ -1,0 +1,14 @@
+# =============================================================================
+# SteamStats — Robots.txt & Agent Discovery
+# Copyright (c) 2026 GuacamoleGH · steamstats.guacamolegh.es
+# =============================================================================
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Agent Readiness
+# Para agentes autónomos e IAs, consulta el manifiesto en:
+# https://steamstats.guacamolegh.es/llms.txt
+
+Sitemap: https://steamstats.guacamolegh.es/sitemap.xml
