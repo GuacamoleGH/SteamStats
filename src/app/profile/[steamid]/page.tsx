@@ -7,13 +7,16 @@
 
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowLeft, Clock, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Clock } from 'lucide-react';
 import { getCompleteProfile } from '@/lib/steam/api';
 import { ProfileHeader } from '@/components/profile/ProfileHeader';
 import { SummaryCards } from '@/components/profile/SummaryCards';
 import { TopGamesTable } from '@/components/profile/TopGamesTable';
 import { BadgesSection } from '@/components/profile/BadgesSection';
 import { PrivateProfileAlert } from '@/components/profile/PrivateProfileAlert';
+import { AccountValueCard } from '@/components/stats/AccountValueCard';
+import { PlaytimeDistributionChart } from '@/components/charts/PlaytimeDistributionChart';
+import { PriceDistributionChart } from '@/components/charts/PriceDistributionChart';
 
 interface ProfilePageProps {
   params: Promise<{
@@ -64,7 +67,18 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       {/* Tarjetas de Resumen (Horas, 2 Semanas, Pile of Shame, Nivel/XP) */}
       <SummaryCards data={profileData} />
 
-      {/* Top 10 Juegos Más Jugados */}
+      {/* Valor de la Cuenta & Coste por Hora */}
+      <div className="mb-8">
+        <AccountValueCard metrics={profileData.accountValue} />
+      </div>
+
+      {/* Gráficas de Distribución de Horas y Precio */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <PlaytimeDistributionChart data={profileData.distributions.playtimeBuckets} />
+        <PriceDistributionChart data={profileData.distributions.priceBuckets} />
+      </div>
+
+      {/* Top 10 Juegos Más Jugados con Coste/Hora */}
       <TopGamesTable games={profileData.topGames} />
 
       {/* Insignias Coleccionadas */}

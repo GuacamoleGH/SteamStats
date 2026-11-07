@@ -30,6 +30,10 @@
 - **Decisión:** Reutilizar estrictamente los tokens del ecosistema GuacamoleGH: fondo profundo `#080b11` / `#0c0e12`, superficies `#181d26`, acento verde neón `#00f59b`, turquesa `#00d9c4` y tipografías `Inter` + `JetBrains Mono`. Incluir botón permanente de regreso al Hub (`hub.guacamolegh.es`) en la cabecera.
 - **Motivo:** Cumplir el requisito obligatorio de pertenencia al homelab personal de GuacamoleGH.
 
+### ADR-06 (2026-11-07) · Cálculo Financiero de la Biblioteca y Distribuciones Estadísticas
+- **Decisión:** Modelar las finanzas de la cuenta en tres métricas de coste por hora amortizado (todos los juegos, solo de pago, solo jugados) con formato de moneda estándar en España (`es-ES`, euros €). Representar la segmentación de tiempo en 8 tramos y de precio en 7 tramos con Recharts en Server Components hijos (`'use client'`).
+- **Motivo:** Cumplir `REQ-05`, `REQ-06` y `RNF-05` ofreciendo al usuario una perspectiva clara de amortización de su gasto en videojuegos similar a SteamDB.
+
 ---
 
 ## ⚠️ Lecciones Aprendidas

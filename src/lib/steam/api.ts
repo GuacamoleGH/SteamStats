@@ -14,6 +14,14 @@
 import { prisma } from '@/lib/db';
 import { calculateLevelProgress, LevelXpInfo } from './xp-calculator';
 import { GUACAMOLE_STEAM_FIXTURE } from './fixtures';
+import {
+  calculateAccountValue,
+  calculateDistributions,
+  type AccountValueMetrics,
+  type DistributionsData,
+  type GamePriceData,
+} from './pricing';
+import { getOrFetchGamePrices } from './storefront';
 
 const PROFILE_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hora
 const REFRESH_COOLDOWN_MS = 5 * 60 * 1000;   // 5 minutos
@@ -38,6 +46,10 @@ export interface ProfileGameItem {
   playtime2WeeksHours: number;
   hasPlayed: boolean;
   lastPlayedTime?: Date | null;
+  isFree?: boolean;
+  currentPriceCents?: number | null;
+  lowestPriceCents?: number | null;
+  costPerHourEur?: number | null;
 }
 
 export interface ProfileBadgeItem {
@@ -62,6 +74,8 @@ export interface CompleteProfileData {
   isPrivate: boolean;
   levelInfo: LevelXpInfo;
   stats: ProfileSummaryStats;
+  accountValue: AccountValueMetrics;
+  distributions: DistributionsData;
   topGames: ProfileGameItem[];
   recentGames: ProfileGameItem[];
   badges: ProfileBadgeItem[];
@@ -270,6 +284,13 @@ export async function getCompleteProfile(
       }
     });
 
+    // 4. Actualizar precios de juegos en la tienda respetando límites y caché de 24h
+    try {
+      await getOrFetchGamePrices(processedGames.map((g) => g.appId));
+    } catch {
+      // Resiliencia: si la tienda de Steam falla o tiene rate limit, continuar con los datos existentes
+    }
+
     // Cargar perfil completo actualizado
     const freshProfile = await prisma.steamProfile.findUniqueOrThrow({
       where: { steamId },
@@ -295,19 +316,32 @@ export async function getCompleteProfile(
  * Transforma el modelo Prisma a la estructura pública de CompleteProfileData.
  */
 function formatProfileFromDb(profile: any, isCached: boolean): CompleteProfileData {
-  const games: ProfileGameItem[] = (profile.ownedGames || []).map((og: any) => ({
-    appId: og.appId,
-    name: og.game.name,
-    headerImage:
-      og.game.headerImage ||
-      `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${og.appId}/header.jpg`,
-    playtimeForeverMin: og.playtimeForeverMin,
-    playtimeForeverHours: Math.round((og.playtimeForeverMin / 60) * 10) / 10,
-    playtime2WeeksMin: og.playtime2WeeksMin,
-    playtime2WeeksHours: Math.round((og.playtime2WeeksMin / 60) * 10) / 10,
-    hasPlayed: og.hasPlayed,
-    lastPlayedTime: og.lastPlayedTime,
-  }));
+  const games: ProfileGameItem[] = (profile.ownedGames || []).map((og: any) => {
+    const hours = Math.round((og.playtimeForeverMin / 60) * 10) / 10;
+    const currentPriceCents = og.game.currentPriceCents;
+    const costPerHourEur =
+      currentPriceCents !== null && currentPriceCents > 0 && og.playtimeForeverMin > 0
+        ? Math.round(((currentPriceCents / 100) / (og.playtimeForeverMin / 60)) * 100) / 100
+        : null;
+
+    return {
+      appId: og.appId,
+      name: og.game.name,
+      headerImage:
+        og.game.headerImage ||
+        `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${og.appId}/header.jpg`,
+      playtimeForeverMin: og.playtimeForeverMin,
+      playtimeForeverHours: hours,
+      playtime2WeeksMin: og.playtime2WeeksMin,
+      playtime2WeeksHours: Math.round((og.playtime2WeeksMin / 60) * 10) / 10,
+      hasPlayed: og.hasPlayed,
+      lastPlayedTime: og.lastPlayedTime,
+      isFree: og.game.isFree,
+      currentPriceCents,
+      lowestPriceCents: og.game.lowestPriceCents,
+      costPerHourEur,
+    };
+  });
 
   const totalGames = games.length;
   const playedGames = games.filter((g) => g.hasPlayed).length;
@@ -316,6 +350,22 @@ function formatProfileFromDb(profile: any, isCached: boolean): CompleteProfileDa
 
   const totalMinutes = games.reduce((acc, g) => acc + g.playtimeForeverMin, 0);
   const twoWeeksMinutes = games.reduce((acc, g) => acc + g.playtime2WeeksMin, 0);
+
+  // Métricas financieras y distribuciones
+  const gamePriceData: GamePriceData[] = (profile.ownedGames || []).map((og: any) => ({
+    appId: og.appId,
+    name: og.game.name,
+    isFree: og.game.isFree,
+    isDelisted: og.game.isDelisted,
+    currentPriceCents: og.game.currentPriceCents,
+    initialPriceCents: og.game.initialPriceCents,
+    discountPercent: og.game.discountPercent,
+    lowestPriceCents: og.game.lowestPriceCents,
+    playtimeForeverMin: og.playtimeForeverMin,
+  }));
+
+  const accountValue = calculateAccountValue(gamePriceData);
+  const distributions = calculateDistributions(gamePriceData);
 
   // Top de juegos más jugados
   const topGames = [...games]
@@ -360,6 +410,8 @@ function formatProfileFromDb(profile: any, isCached: boolean): CompleteProfileDa
       twoWeeksPlaytimeHours: Math.round((twoWeeksMinutes / 60) * 10) / 10,
       badgesCount: badges.length,
     },
+    accountValue,
+    distributions,
     topGames,
     recentGames,
     badges,
@@ -396,10 +448,18 @@ async function saveAndFormatFixture(): Promise<CompleteProfileData> {
           appId: g.appId,
           name: g.name,
           headerImage: g.headerImage,
+          isFree: g.isFree ?? false,
+          currentPriceCents: g.currentPriceCents ?? null,
+          lowestPriceCents: g.lowestPriceCents ?? null,
+          priceUpdatedAt: new Date(),
         },
         update: {
           name: g.name,
           headerImage: g.headerImage,
+          isFree: g.isFree ?? false,
+          currentPriceCents: g.currentPriceCents ?? null,
+          lowestPriceCents: g.lowestPriceCents ?? null,
+          priceUpdatedAt: new Date(),
         },
       });
 

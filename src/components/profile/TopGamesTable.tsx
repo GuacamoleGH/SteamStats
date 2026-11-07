@@ -9,6 +9,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Trophy, ExternalLink, Flame } from 'lucide-react';
 import { ProfileGameItem } from '@/lib/steam/api';
+import { formatEurFromCents, formatHours } from '@/lib/formatters';
 
 interface TopGamesTableProps {
   games: ProfileGameItem[];
@@ -16,11 +17,6 @@ interface TopGamesTableProps {
 
 export const TopGamesTable: React.FC<TopGamesTableProps> = ({ games }) => {
   const maxHours = games.length > 0 ? games[0].playtimeForeverHours : 1;
-
-  const formatHours = (hours: number) =>
-    new Intl.NumberFormat('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(
-      hours
-    );
 
   if (games.length === 0) {
     return (
@@ -42,7 +38,7 @@ export const TopGamesTable: React.FC<TopGamesTableProps> = ({ games }) => {
               Top Juegos Más Jugados
             </h2>
             <p className="text-xs text-slate-400">
-              Títulos a los que más tiempo has dedicado en Steam
+              Títulos a los que más tiempo has dedicado con su amortización económica
             </p>
           </div>
         </div>
@@ -58,9 +54,11 @@ export const TopGamesTable: React.FC<TopGamesTableProps> = ({ games }) => {
             <tr className="border-b border-carbon-border text-xs font-semibold text-slate-400 uppercase tracking-wider">
               <th className="py-3 px-3 w-12 text-center">#</th>
               <th className="py-3 px-3">Juego</th>
-              <th className="py-3 px-3 w-44 text-right">Tiempo Total</th>
-              <th className="py-3 px-3 w-36 text-right hidden sm:table-cell">Últimas 2 Sem.</th>
-              <th className="py-3 px-3 w-16 text-center">Tienda</th>
+              <th className="py-3 px-3 w-36 text-right">Tiempo Total</th>
+              <th className="py-3 px-3 w-32 text-right hidden md:table-cell">Últimas 2 Sem.</th>
+              <th className="py-3 px-3 w-28 text-right hidden sm:table-cell">Precio Actual</th>
+              <th className="py-3 px-3 w-28 text-right font-mono">Coste / Hora</th>
+              <th className="py-3 px-3 w-14 text-center">Tienda</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-carbon-border/50 text-sm">
@@ -114,7 +112,7 @@ export const TopGamesTable: React.FC<TopGamesTableProps> = ({ games }) => {
                       <span className="text-xs text-guacamole-400">h</span>
                     </div>
                     {/* Barra de progreso */}
-                    <div className="w-full bg-carbon-surface h-1.5 rounded-full overflow-hidden mt-1.5 ml-auto max-w-[120px]">
+                    <div className="w-full bg-carbon-surface h-1.5 rounded-full overflow-hidden mt-1.5 ml-auto max-w-[100px]">
                       <div
                         className="bg-accent-gradient h-full rounded-full"
                         style={{ width: `${percentageOfMax}%` }}
@@ -123,7 +121,7 @@ export const TopGamesTable: React.FC<TopGamesTableProps> = ({ games }) => {
                   </td>
 
                   {/* Horas 2 Semanas */}
-                  <td className="py-3.5 px-3 text-right hidden sm:table-cell font-mono">
+                  <td className="py-3.5 px-3 text-right hidden md:table-cell font-mono">
                     {game.playtime2WeeksHours > 0 ? (
                       <span className="inline-flex items-center gap-1 text-turquoise-400 font-semibold text-xs">
                         <Flame className="w-3 h-3" />
@@ -131,6 +129,26 @@ export const TopGamesTable: React.FC<TopGamesTableProps> = ({ games }) => {
                       </span>
                     ) : (
                       <span className="text-slate-600 text-xs">&mdash;</span>
+                    )}
+                  </td>
+
+                  {/* Precio actual */}
+                  <td className="py-3.5 px-3 text-right hidden sm:table-cell font-mono text-xs">
+                    <span className={game.isFree || game.currentPriceCents === 0 ? 'text-emerald-400 font-medium' : 'text-slate-300'}>
+                      {formatEurFromCents(game.currentPriceCents)}
+                    </span>
+                  </td>
+
+                  {/* Coste por hora */}
+                  <td className="py-3.5 px-3 text-right font-mono text-xs">
+                    {game.isFree || game.currentPriceCents === 0 ? (
+                      <span className="text-emerald-400 font-medium">Gratis</span>
+                    ) : game.costPerHourEur !== null && game.costPerHourEur !== undefined ? (
+                      <span className="text-guacamole-400 font-bold">
+                        {game.costPerHourEur.toFixed(2).replace('.', ',')} €/h
+                      </span>
+                    ) : (
+                      <span className="text-slate-500">&mdash;</span>
                     )}
                   </td>
 

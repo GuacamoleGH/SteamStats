@@ -4,9 +4,9 @@
 
 ## Contexto del Proyecto (Context Snapshot)
 * **Objetivo**: Desarrollar y desplegar `SteamStats` en el homelab personal de GuacamoleGH (`steamstats.guacamolegh.es`) mediante Docker Compose.
-* **Estado actual**: Fase 2 (`/build`) completada y validada; listo para Fase 3 (Precios de Tienda, IsThereAnyDeal y Valor de Cuenta).
-* **Última decisión técnica**: Implementación del algoritmo matemático de niveles y XP de Steam ($100 \times (\lfloor L/10 \rfloor + 1)$) con tests unitarios en Vitest y pipeline de caché de 1h en SQLite con cooldown de 5 min.
-* **Próximo paso**: Iniciar Fase 3 (`REQ-05`, `REQ-06`): Integración de precios en euros con Storefront API, mínimos históricos con ITAD, valor total de cuenta y gráficas de distribución con Recharts.
+* **Estado actual**: Fase 3 completada y validada; listo para Fase 4 (Snapshots diarios del worker con node-cron y Heatmap de actividad estilo GitHub).
+* **Última decisión técnica**: Cálculo financiero en euros (es-ES) de valor actual, mínimos históricos, coste por hora interactivo en 3 modos (todos, de pago, jugados), y distribuciones de Recharts para horas y precios con 21 tests unitarios en Vitest.
+* **Próximo paso**: Iniciar Fase 4 (`REQ-08`): Implementar el worker programado (`node-cron`), snapshots en SQLite (`OwnedGameSnapshot`) y heatmap anual estilo GitHub con filtro por juego.
 
 ---
 
@@ -29,10 +29,12 @@
 - [x] **Caché de Perfil**: TTL de 1 hora con botón de refresco y cooldown (`@spec RNF-02`).
 
 ### Fase 3: Precios de Tienda, IsThereAnyDeal y Valor de Cuenta
-- [ ] **Cliente Storefront API de Steam**: Precios en euros (`cc=es`) con cola de ritmo y *backoff* (`@spec REQ-05`, `RNF-02`).
-- [ ] **Cliente IsThereAnyDeal**: Mínimos históricos de precios (`@spec REQ-05`).
-- [ ] **Calculadora de Valor**: Suma total de cuenta (actual y mínimo histórico), coste por hora y desglose de juegos gratuitos/retirados (`@spec REQ-05`, `RNF-05`).
-- [ ] **Distribuciones Recharts**: Gráfica de tramos de horas y gráfica de tramos de precio (`@spec REQ-06`).
+- [x] **Cliente Storefront API de Steam**: Precios en euros (`cc=es`) con cola de ritmo, caché de 24h y *backoff* (`@spec REQ-05`, `RNF-02`).
+- [x] **Integración IsThereAnyDeal / Fallbacks**: Mínimos históricos de precios y cálculo de porcentaje de ahorro (`@spec REQ-05`).
+- [x] **Calculadora de Valor**: Suma total de cuenta (actual y mínimo histórico), coste por hora interactivo (todos, de pago, jugados) y desglose de juegos gratuitos/retirados (`@spec REQ-05`, `RNF-05`).
+- [x] **Distribuciones Recharts**: Gráfica de tramos de horas (8 tramos) y gráfica de tramos de precio (7 tramos) (`@spec REQ-06`).
+- [x] **Top Games Enriquecido**: Columnas de precio actual y coste por hora amortizado por título (`@spec REQ-04`, `REQ-05`).
+- [x] **Tests Unitarios de Precios**: Cobertura con Vitest en `tests/pricing.test.ts` (`@spec RNF-01`).
 
 ### Fase 4: Snapshots Diarios y Heatmap de Actividad
 - [ ] **Proceso Worker**: Script autónomo con `node-cron` para captura periódica de minutos por juego (`@spec REQ-08`, `RNF-01`).
@@ -65,6 +67,6 @@
 ## 🔄 Context Snapshot / Snapshot de Contexto
 
 > **Last update / Última actualización:** 2026-11-07  
-> **Exact point / Punto exacto:** Bootstrap de `dbv-specs-ops` completado. Documentación de especificaciones, arquitectura y diseño sincronizada.  
-> **Pending / Pendiente:** Ejecución de la Fase 1 (`/build`).  
-> **Next step / Próximo paso:** Inicializar package.json, dependencias de Next.js/Tailwind/Prisma y estructura de la Fase 1.
+> **Exact point / Punto exacto:** Fase 3 (Precios, valor de cuenta y distribuciones Recharts) completada y validada en local. Dev server corriendo en http://localhost:3000.  
+> **Pending / Pendiente:** Revisión del usuario y confirmación para iniciar Fase 4 (Snapshots diarios y Heatmap).  
+> **Next step / Próximo paso:** Implementar el worker con `node-cron`, endpoint de heatmap y componente visual estilo GitHub.

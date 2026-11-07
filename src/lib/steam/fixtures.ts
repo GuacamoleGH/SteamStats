@@ -27,9 +27,12 @@ export const GUACAMOLE_STEAM_FIXTURE = {
     {
       appId: 730,
       name: 'Counter-Strike 2',
-      playtimeForeverMin: 84320, // ~1405 h
+      playtimeForeverMin: 84320, // ~1405.3 h
       playtime2WeeksMin: 720,    // 12 h
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/header.jpg',
+      isFree: true,
+      currentPriceCents: 0,
+      lowestPriceCents: 0,
     },
     {
       appId: 1086940,
@@ -37,6 +40,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 18240, // 304 h
       playtime2WeeksMin: 1200,   // 20 h
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/header.jpg',
+      isFree: false,
+      currentPriceCents: 5999, // 59,99 €
+      lowestPriceCents: 4799,  // 47,99 €
     },
     {
       appId: 1091500,
@@ -44,6 +50,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 11450, // 190.8 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/header.jpg',
+      isFree: false,
+      currentPriceCents: 5999,
+      lowestPriceCents: 2999,
     },
     {
       appId: 1245620,
@@ -51,6 +60,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 9800, // 163.3 h
       playtime2WeeksMin: 340,   // 5.6 h
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg',
+      isFree: false,
+      currentPriceCents: 5999,
+      lowestPriceCents: 3599,
     },
     {
       appId: 292030,
@@ -58,6 +70,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 8900, // 148.3 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg',
+      isFree: false,
+      currentPriceCents: 2999,
+      lowestPriceCents: 599,
     },
     {
       appId: 1145360,
@@ -65,6 +80,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 5600, // 93.3 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1145360/header.jpg',
+      isFree: false,
+      currentPriceCents: 2450,
+      lowestPriceCents: 822,
     },
     {
       appId: 252490,
@@ -72,6 +90,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 4800, // 80 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/252490/header.jpg',
+      isFree: false,
+      currentPriceCents: 3999,
+      lowestPriceCents: 1359,
     },
     {
       appId: 1172470,
@@ -79,6 +100,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 4200, // 70 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/header.jpg',
+      isFree: true,
+      currentPriceCents: 0,
+      lowestPriceCents: 0,
     },
     {
       appId: 271590,
@@ -86,6 +110,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 3900, // 65 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/271590/header.jpg',
+      isFree: false,
+      currentPriceCents: 2998,
+      lowestPriceCents: 1499,
     },
     {
       appId: 814380,
@@ -93,6 +120,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 3100, // 51.6 h
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/814380/header.jpg',
+      isFree: false,
+      currentPriceCents: 5999,
+      lowestPriceCents: 2999,
     },
     // Juegos sin jugar (Backlog / Pile of Shame)
     {
@@ -101,6 +131,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 0,
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/377160/header.jpg',
+      isFree: false,
+      currentPriceCents: 1999,
+      lowestPriceCents: 499,
     },
     {
       appId: 489830,
@@ -108,6 +141,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 0,
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/489830/header.jpg',
+      isFree: false,
+      currentPriceCents: 3999,
+      lowestPriceCents: 799,
     },
     {
       appId: 582010,
@@ -115,6 +151,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 0,
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/582010/header.jpg',
+      isFree: false,
+      currentPriceCents: 2999,
+      lowestPriceCents: 989,
     },
     {
       appId: 883710,
@@ -122,6 +161,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 0,
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/883710/header.jpg',
+      isFree: false,
+      currentPriceCents: 3999,
+      lowestPriceCents: 989,
     },
     {
       appId: 105600,
@@ -129,6 +171,9 @@ export const GUACAMOLE_STEAM_FIXTURE = {
       playtimeForeverMin: 0,
       playtime2WeeksMin: 0,
       headerImage: 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/105600/header.jpg',
+      isFree: false,
+      currentPriceCents: 999,
+      lowestPriceCents: 249,
     },
   ],
   badges: [
