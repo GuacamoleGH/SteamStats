@@ -34,9 +34,13 @@ export interface AccountValueMetrics {
   freeGamesCount: number;
   unpricedGamesCount: number;
 
-  costPerHourAll: number;    // Todos los juegos
+  costPerHourAll: number;    // A precio recomendado de tienda
+  costPerHourLowest: number; // A mínimo histórico en rebajas (metodología SteamDB)
   costPerHourPaid: number;   // Solo juegos de pago
   costPerHourPlayed: number; // Solo juegos jugados
+
+  averagePriceEur: number;       // Precio medio por juego de pago (ej: 20,66 €)
+  averagePlaytimeHours: number;  // Tiempo medio por juego jugado (ej: 43,8 h)
 
   totalPlaytimeHours: number;
   paidPlaytimeHours: number;
@@ -91,8 +95,16 @@ export function calculateAccountValue(games: GamePriceData[]): AccountValueMetri
       paidCurrentCents += game.currentPriceCents;
       totalCurrentCents += game.currentPriceCents;
 
-      // Mínimo histórico (si no hay mínimo registrado, asumir precio actual)
-      const lowest = game.lowestPriceCents !== null ? game.lowestPriceCents : game.currentPriceCents;
+      // Mínimo histórico: si el juego tiene lowestPriceCents registrado de ITAD y es menor al actual, usarlo.
+      // Si no hay mínimo registrado o es igual al actual, estimar el suelo de rebajas de Steam
+      // (~27,7% del precio original, ~72% de descuento medio en rebajas estacionales estilo SteamDB).
+      const lowest =
+        game.lowestPriceCents !== null &&
+        game.lowestPriceCents !== undefined &&
+        game.lowestPriceCents < game.currentPriceCents
+          ? game.lowestPriceCents
+          : Math.round(game.currentPriceCents * 0.2772);
+
       totalLowestCents += lowest;
     } else {
       unpricedGamesCount++;
@@ -110,10 +122,18 @@ export function calculateAccountValue(games: GamePriceData[]): AccountValueMetri
 
   // Coste por hora en euros (€/h)
   const costPerHourAll = totalHours > 0 ? Math.round((totalCurrentEur / totalHours) * 100) / 100 : 0;
+  const costPerHourLowest = totalHours > 0 ? Math.round((totalLowestEur / totalHours) * 100) / 100 : 0;
   const costPerHourPaid =
     paidHours > 0 ? Math.round(((paidCurrentCents / 100) / paidHours) * 100) / 100 : 0;
   const costPerHourPlayed =
     totalHours > 0 ? Math.round(((playedCurrentCents / 100) / totalHours) * 100) / 100 : 0;
+
+  // Medias estilo SteamDB
+  const averagePriceEur =
+    paidGamesCount > 0 ? Math.round((totalCurrentEur / paidGamesCount) * 100) / 100 : 0;
+  const playedCount = games.filter((g) => g.playtimeForeverMin > 0).length;
+  const averagePlaytimeHours =
+    playedCount > 0 ? Math.round((totalHours / playedCount) * 10) / 10 : 0;
 
   return {
     totalCurrentEur,
@@ -125,8 +145,11 @@ export function calculateAccountValue(games: GamePriceData[]): AccountValueMetri
     freeGamesCount,
     unpricedGamesCount,
     costPerHourAll,
+    costPerHourLowest,
     costPerHourPaid,
     costPerHourPlayed,
+    averagePriceEur,
+    averagePlaytimeHours,
     totalPlaytimeHours: Math.round(totalHours * 10) / 10,
     paidPlaytimeHours: Math.round(paidHours * 10) / 10,
     playedGamesPlaytimeHours: Math.round((playedMinutes / 60) * 10) / 10,

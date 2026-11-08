@@ -354,9 +354,11 @@ export function generateMockSnapshots(
     dailyIncrements[i] = Math.round(dailyIncrements[i] * scale);
   }
 
-  // Asegurar actividad en los últimos 7 días si el juego tiene tiempo registrado
+  // Hoy (el día en curso) no forzamos minutos artificiales (el usuario no ha jugado hoy)
+  dailyIncrements[daysCount - 1] = 0;
+
+  // Actividad reciente previa (ayer / días anteriores) si el juego tiene tiempo registrado
   if (totalMinutes > 300) {
-    dailyIncrements[daysCount - 1] = Math.max(dailyIncrements[daysCount - 1], 45);
     dailyIncrements[daysCount - 2] = Math.max(dailyIncrements[daysCount - 2], 60);
   }
 

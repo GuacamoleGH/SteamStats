@@ -135,16 +135,17 @@ export function ActivityHeatmap({ steamId }: ActivityHeatmapProps) {
     'Dic',
   ];
 
-  // Formato legible de fecha para el tooltip
+  // Formato legible de fecha para el tooltip (con solo la primera letra en mayúscula)
   const formatTooltipDate = (dateStr: string) => {
     const [y, m, d] = dateStr.split('-').map(Number);
     const dateObj = new Date(Date.UTC(y, m - 1, d));
-    return new Intl.DateTimeFormat('es-ES', {
+    const formatted = new Intl.DateTimeFormat('es-ES', {
       weekday: 'long',
       day: 'numeric',
       month: 'long',
       year: 'numeric',
     }).format(dateObj);
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1);
   };
 
   return (
@@ -442,7 +443,7 @@ export function ActivityHeatmap({ steamId }: ActivityHeatmapProps) {
                 <div className="text-slate-300 min-h-[20px] flex items-center">
                   {hoveredDay ? (
                     <div className="flex items-center gap-2">
-                      <span className="text-white font-semibold capitalize">
+                      <span className="text-white font-semibold">
                         {formatTooltipDate(hoveredDay.date)}:
                       </span>
                       {hoveredDay.minutes > 0 ? (
