@@ -31,16 +31,16 @@ interface PriceDistributionChartProps {
 
 export function PriceDistributionChart({ data }: PriceDistributionChartProps) {
   return (
-    <div className="rounded-2xl border border-carbon-800 bg-carbon-900/90 p-6 backdrop-blur-sm shadow-xl flex flex-col justify-between">
+    <div className="p-6 sm:p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card flex flex-col justify-between">
       {/* Cabecera */}
-      <div className="flex items-center justify-between border-b border-carbon-800/80 pb-4 mb-4">
+      <div className="flex items-center justify-between border-b border-carbon-border pb-4 mb-4">
         <div>
-          <span className="text-xs font-mono font-medium tracking-wider text-brand-cyan uppercase">
+          <span className="text-xs font-mono font-medium tracking-wider text-turquoise-400 uppercase">
             Coste de Adquisición
           </span>
           <h3 className="text-lg font-bold text-white mt-0.5">Distribución por Precio</h3>
         </div>
-        <span className="text-xs font-mono text-carbon-400">Juegos por rango de €</span>
+        <span className="text-xs font-mono text-slate-400">Juegos por rango de €</span>
       </div>
 
       {/* Gráfica */}
@@ -73,7 +73,7 @@ export function PriceDistributionChart({ data }: PriceDistributionChartProps) {
                 if (active && payload && payload.length) {
                   const item = payload[0].payload as DistributionBucket;
                   return (
-                    <div className="rounded-lg border border-carbon-700 bg-carbon-950/95 px-3 py-2 shadow-xl backdrop-blur-md">
+                    <div className="rounded-lg border border-carbon-border bg-carbon-surface/95 px-3 py-2 shadow-xl backdrop-blur-md">
                       <p className="text-xs font-mono text-carbon-400">{item.name}</p>
                       <p className="text-sm font-mono font-bold text-brand-cyan mt-0.5">
                         {item.count} {item.count === 1 ? 'juego' : 'juegos'}
@@ -100,13 +100,13 @@ export function PriceDistributionChart({ data }: PriceDistributionChartProps) {
       </div>
 
       {/* Leyenda */}
-      <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-carbon-400 border-t border-carbon-800/60 pt-3">
+      <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-carbon-border pt-3">
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-sm bg-emerald-500 inline-block"></span>
           Free-to-Play
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-sm bg-brand-cyan inline-block"></span>
+          <span className="w-2 h-2 rounded-sm bg-turquoise-400 inline-block"></span>
           De pago comercial
         </span>
       </div>

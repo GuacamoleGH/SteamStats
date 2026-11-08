@@ -24,6 +24,10 @@ export interface HeatmapStats {
   longestStreak: number;
   currentStreak: number;
   maxDay: { date: string; hours: number } | null;
+  avgHoursPerActiveDay: number;
+  weekendPercentage: number;
+  favoriteDayName: string;
+  mostActiveMonth: string;
 }
 
 export interface HeatmapData {
@@ -74,6 +78,31 @@ export interface RawSnapshotItem {
   snapshotDate: Date;
 }
 
+const SPANISH_DAY_NAMES = [
+  'Domingos',
+  'Lunes',
+  'Martes',
+  'Miércoles',
+  'Jueves',
+  'Viernes',
+  'Sábados',
+];
+
+const SPANISH_MONTH_NAMES = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+];
+
 /**
  * Calcula la actividad diaria por diferencia de minutos entre snapshots sucesivos.
  * @spec REQ-08
@@ -92,6 +121,10 @@ export function calculateDailyActivity(
         longestStreak: 0,
         currentStreak: 0,
         maxDay: null,
+        avgHoursPerActiveDay: 0,
+        weekendPercentage: 0,
+        favoriteDayName: 'Fines de semana',
+        mostActiveMonth: 'Noviembre',
       },
       days: emptyRange.map((date) => ({
         date,
@@ -113,7 +146,6 @@ export function calculateDailyActivity(
   }
 
   // 2. Para cada juego, calcular la diferencia diaria entre snapshots consecutivos
-  // dailyMinutesMap: fecha (YYYY-MM-DD) -> minutos jugados ese día
   const dailyMinutesMap = new Map<string, number>();
 
   for (const [, gameSnapshots] of snapshotsByGame.entries()) {
@@ -137,6 +169,8 @@ export function calculateDailyActivity(
   let totalMinutes = 0;
   let activeDays = 0;
   let maxDay: { date: string; hours: number } | null = null;
+  const dayOfWeekMinutes = new Array(7).fill(0);
+  const monthMinutesMap = new Map<string, number>();
 
   const days: DailyActivityDay[] = dateRange.map((date) => {
     const minutes = dailyMinutesMap.get(date) ?? 0;
@@ -150,6 +184,15 @@ export function calculateDailyActivity(
       if (!maxDay || hours > maxDay.hours) {
         maxDay = { date, hours };
       }
+
+      // Distribución por día de la semana y por mes
+      const [y, m, d] = date.split('-').map(Number);
+      const dateObj = new Date(Date.UTC(y, m - 1, d));
+      const dow = dateObj.getUTCDay();
+      dayOfWeekMinutes[dow] += minutes;
+
+      const monthName = SPANISH_MONTH_NAMES[m - 1] || 'Noviembre';
+      monthMinutesMap.set(monthName, (monthMinutesMap.get(monthName) ?? 0) + minutes);
     }
 
     return {
@@ -181,7 +224,6 @@ export function calculateDailyActivity(
     if (days[i].minutes > 0) {
       currentStreak++;
     } else {
-      // Si hoy aún no ha jugado, permitimos que la racha de ayer cuente
       if (i === days.length - 1) {
         continue;
       }
@@ -191,6 +233,33 @@ export function calculateDailyActivity(
 
   const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
   const hasData = dailyMinutesMap.size > 0;
+  const avgHoursPerActiveDay =
+    activeDays > 0 ? Math.round((totalHours / activeDays) * 10) / 10 : 0;
+
+  // Fin de semana (Domingo=0, Sábado=6)
+  const weekendMinutes = dayOfWeekMinutes[0] + dayOfWeekMinutes[6];
+  const weekendPercentage =
+    totalMinutes > 0 ? Math.round((weekendMinutes / totalMinutes) * 100) : 0;
+
+  // Día favorito de la semana
+  let maxDowMinutes = -1;
+  let favoriteDayName = 'Sábados';
+  for (let dow = 0; dow < 7; dow++) {
+    if (dayOfWeekMinutes[dow] > maxDowMinutes) {
+      maxDowMinutes = dayOfWeekMinutes[dow];
+      favoriteDayName = SPANISH_DAY_NAMES[dow];
+    }
+  }
+
+  // Mes más activo
+  let maxMonthMinutes = -1;
+  let mostActiveMonth = 'Noviembre';
+  for (const [mName, mMin] of monthMinutesMap.entries()) {
+    if (mMin > maxMonthMinutes) {
+      maxMonthMinutes = mMin;
+      mostActiveMonth = mName;
+    }
+  }
 
   return {
     stats: {
@@ -199,6 +268,10 @@ export function calculateDailyActivity(
       longestStreak,
       currentStreak,
       maxDay,
+      avgHoursPerActiveDay,
+      weekendPercentage,
+      favoriteDayName,
+      mostActiveMonth,
     },
     days,
     hasData,
@@ -206,35 +279,109 @@ export function calculateDailyActivity(
 }
 
 /**
- * Generador de datos simulados para pruebas y para el perfil de ejemplo
- * (GuacamoleSteam) cuando aún no hay historial de snapshots registrado.
+ * Generador de datos simulados para un perfil cuando aún no hay snapshots
+ * históricos acumulados por el background worker. Distribuye el tiempo de juego
+ * a lo largo de los 365 días del año de forma orgánica, destacando fines de semana,
+ * rachas de sesiones y actividad reciente.
  */
-export function generateMockSnapshots(steamId: string, appId: number, totalMinutes: number): RawSnapshotItem[] {
-  const snapshots: RawSnapshotItem[] = [];
-  const now = new Date();
+export function generateMockSnapshots(
+  steamId: string,
+  appId: number,
+  totalMinutes: number,
+  daysCount: number = 365,
+  endDate: Date = new Date()
+): RawSnapshotItem[] {
+  const end = new Date(endDate);
+  end.setUTCHours(0, 0, 0, 0);
 
-  // Generamos una progresión histórica realista en los últimos 180 días
-  let currentMin = Math.max(0, totalMinutes - 2400); // Horas previas
-  for (let i = 180; i >= 0; i--) {
-    const d = new Date(now);
-    d.setUTCDate(now.getUTCDate() - i);
+  // Semilla pseudoaleatoria determinista basada en steamId + appId
+  let seed = appId * 37 + 101;
+  for (let c = 0; c < steamId.length; c++) {
+    seed = (seed * 31 + steamId.charCodeAt(c)) % 2147483647;
+  }
+  const pseudoRandom = () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+
+  // Estimamos cuántos minutos corresponden al último año
+  // Para juegos muy jugados (>100h), ~20-35% en el último año.
+  // Para juegos medianos o recientes, hasta el 50-80%.
+  const targetYearMinutes = Math.min(
+    totalMinutes,
+    Math.max(
+      60,
+      Math.floor(
+        totalMinutes > 30000
+          ? totalMinutes * 0.22
+          : totalMinutes > 6000
+          ? totalMinutes * 0.35
+          : totalMinutes * 0.65
+      )
+    )
+  );
+
+  // Generamos incrementos diarios a lo largo de los 365 días
+  const dailyIncrements: number[] = new Array(daysCount).fill(0);
+  let accumulated = 0;
+
+  for (let i = daysCount - 1; i >= 0; i--) {
+    const d = new Date(end);
+    d.setUTCDate(end.getUTCDate() - (daysCount - 1 - i));
+    const dow = d.getUTCDay();
+    const isWeekend = dow === 0 || dow === 6;
+    const isFriday = dow === 5;
+
+    // Mayor probabilidad de juego en fines de semana y viernes
+    const playChance = isWeekend ? 0.68 : isFriday ? 0.52 : 0.34;
+    const roll = pseudoRandom();
+
+    if (roll < playChance) {
+      const addedMin = isWeekend
+        ? Math.floor(pseudoRandom() * 160) + 45
+        : isFriday
+        ? Math.floor(pseudoRandom() * 110) + 30
+        : Math.floor(pseudoRandom() * 75) + 20;
+
+      dailyIncrements[i] = addedMin;
+      accumulated += addedMin;
+    }
+  }
+
+  // Normalizar los incrementos al objetivo anual sin superar totalMinutes
+  const scale = accumulated > 0 ? targetYearMinutes / accumulated : 1;
+  for (let i = 0; i < daysCount; i++) {
+    dailyIncrements[i] = Math.round(dailyIncrements[i] * scale);
+  }
+
+  // Asegurar actividad en los últimos 7 días si el juego tiene tiempo registrado
+  if (totalMinutes > 300) {
+    dailyIncrements[daysCount - 1] = Math.max(dailyIncrements[daysCount - 1], 45);
+    dailyIncrements[daysCount - 2] = Math.max(dailyIncrements[daysCount - 2], 60);
+  }
+
+  // Recalcular la suma ajustada
+  let finalYearSum = dailyIncrements.reduce((sum, val) => sum + val, 0);
+  if (finalYearSum > totalMinutes) {
+    finalYearSum = totalMinutes;
+  }
+
+  // Construir snapshots acumulados (playtimeForeverMin) de más antiguo a más reciente
+  const initialBase = Math.max(0, totalMinutes - finalYearSum);
+  let runningTotal = initialBase;
+  const snapshots: RawSnapshotItem[] = [];
+
+  for (let i = 0; i < daysCount; i++) {
+    const d = new Date(end);
+    d.setUTCDate(end.getUTCDate() - (daysCount - 1 - i));
     d.setUTCHours(0, 0, 0, 0);
 
-    // Mayor probabilidad de jugar en fines de semana
-    const dayOfWeek = d.getUTCDay();
-    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-    const playChance = isWeekend ? 0.65 : 0.35;
-
-    if (Math.random() < playChance && i > 0) {
-      const addedMinutes = isWeekend
-        ? Math.floor(Math.random() * 180) + 45
-        : Math.floor(Math.random() * 90) + 20;
-      currentMin += addedMinutes;
-    }
+    runningTotal += dailyIncrements[i];
+    const playtime = Math.min(runningTotal, totalMinutes);
 
     snapshots.push({
       appId,
-      playtimeForeverMin: Math.min(currentMin, totalMinutes),
+      playtimeForeverMin: i === daysCount - 1 ? totalMinutes : playtime,
       snapshotDate: d,
     });
   }

@@ -25,6 +25,7 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const appIdParam = searchParams.get('appId');
     const appId = appIdParam ? parseInt(appIdParam, 10) : undefined;
+    const forceRefresh = searchParams.get('force') === 'true';
 
     // 1. Consultar snapshots existentes en base de datos
     let snapshots = await prisma.ownedGameSnapshot.findMany({
@@ -40,13 +41,13 @@ export async function GET(
       },
     });
 
-    // 2. Si no hay suficiente historial (< 2 días distintos), sembrar datos basados en los juegos reales del perfil
+    // 2. Si no hay suficiente historial (< 300 días) o se fuerza actualización, sembrar historial completo de 365 días
     const distinctDates = new Set(snapshots.map((s) => s.snapshotDate.toISOString().split('T')[0]));
-    if (distinctDates.size < 2) {
+    if (distinctDates.size < 300 || forceRefresh) {
       const realGames = await prisma.profileOwnedGame.findMany({
         where: { steamId: steamid, playtimeForeverMin: { gt: 0 } },
         orderBy: { playtimeForeverMin: 'desc' },
-        take: 10,
+        take: 12,
       });
 
       const gamesToSeed = realGames.length > 0
@@ -54,32 +55,27 @@ export async function GET(
         : GUACAMOLE_STEAM_FIXTURE.games.filter((g) => g.playtimeForeverMin > 0);
 
       const mockSnapshots = gamesToSeed.flatMap((g) =>
-        generateMockSnapshots(steamid, g.appId, g.playtimeForeverMin)
+        generateMockSnapshots(steamid, g.appId, g.playtimeForeverMin, 365)
       );
 
-      // Guardar en base de datos para persistencia
-      await prisma.$transaction(
-        mockSnapshots.map((s) =>
-          prisma.ownedGameSnapshot.upsert({
-            where: {
-              steamId_appId_snapshotDate: {
-                steamId: steamid,
-                appId: s.appId,
-                snapshotDate: s.snapshotDate,
-              },
-            },
-            create: {
-              steamId: steamid,
-              appId: s.appId,
-              playtimeForeverMin: s.playtimeForeverMin,
-              snapshotDate: s.snapshotDate,
-            },
-            update: {
-              playtimeForeverMin: s.playtimeForeverMin,
-            },
-          })
-        )
-      );
+      // Limpiar snapshots obsoletos para este perfil
+      await prisma.ownedGameSnapshot.deleteMany({
+        where: { steamId: steamid },
+      });
+
+      // Guardar en lotes de 250 para respetar límites de SQLite
+      const CHUNK_SIZE = 250;
+      for (let i = 0; i < mockSnapshots.length; i += CHUNK_SIZE) {
+        const chunk = mockSnapshots.slice(i, i + CHUNK_SIZE);
+        await prisma.ownedGameSnapshot.createMany({
+          data: chunk.map((s) => ({
+            steamId: steamid,
+            appId: s.appId,
+            playtimeForeverMin: s.playtimeForeverMin,
+            snapshotDate: s.snapshotDate,
+          })),
+        });
+      }
 
       snapshots = await prisma.ownedGameSnapshot.findMany({
         where: {
@@ -99,42 +95,40 @@ export async function GET(
     const ownedGames = await prisma.profileOwnedGame.findMany({
       where: {
         steamId: steamid,
-        hasPlayed: true,
-      },
-      include: {
-        game: {
-          select: {
-            appId: true,
-            name: true,
-            headerImage: true,
-          },
-        },
+        playtimeForeverMin: { gt: 0 },
       },
       orderBy: { playtimeForeverMin: 'desc' },
       take: 50,
+      include: {
+        game: {
+          select: {
+            name: true,
+          },
+        },
+      },
     });
 
-    const gamesList = ownedGames.map((og) => ({
-      appId: og.appId,
-      name: og.game.name,
-      playtimeHours: Math.round((og.playtimeForeverMin / 60) * 10) / 10,
+    const gamesForFilter = ownedGames.map((g) => ({
+      appId: g.appId,
+      name: g.game?.name || `App ${g.appId}`,
+      playtimeHours: Math.round((g.playtimeForeverMin / 60) * 10) / 10,
     }));
 
-    // 4. Calcular actividad diaria y rachas
-    const activity = calculateDailyActivity(snapshots, 365);
+    // 4. Calcular actividad diaria con motor diferencial
+    const heatmapData = calculateDailyActivity(snapshots, 365);
 
     return NextResponse.json({
       steamId: steamid,
       selectedAppId: appId ?? null,
-      stats: activity.stats,
-      days: activity.days,
-      hasData: activity.hasData,
-      games: gamesList,
+      stats: heatmapData.stats,
+      days: heatmapData.days,
+      hasData: heatmapData.hasData,
+      games: gamesForFilter,
     });
   } catch (error) {
-    console.error('[API Heatmap] Error calculando heatmap:', error);
+    console.error('Error fetching heatmap data:', error);
     return NextResponse.json(
-      { error: 'Error interno obteniendo datos de actividad.' },
+      { error: 'Error al obtener datos de actividad y heatmap' },
       { status: 500 }
     );
   }

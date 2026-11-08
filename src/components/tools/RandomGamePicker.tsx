@@ -119,7 +119,7 @@ export function RandomGamePicker() {
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Selector de Perfil y Carga */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-carbon-900/90 border border-carbon-800 shadow-xl backdrop-blur-sm mb-8">
+      <div className="p-6 sm:p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card mb-8">
         <label className="text-xs font-mono font-medium text-guacamole-400 flex items-center gap-2 mb-2">
           <Dice5 className="w-4 h-4" />
           <span>Perfil de Steam para la ruleta</span>
@@ -133,7 +133,7 @@ export function RandomGamePicker() {
               value={profileInput}
               onChange={(e) => setProfileInput(e.target.value)}
               placeholder="Introduce tu SteamID64, enlace o vanity..."
-              className="w-full bg-carbon-950 border border-carbon-700 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 font-mono transition-colors"
+              className="w-full bg-carbon-surface border border-carbon-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 font-mono transition-colors"
             />
           </div>
 
@@ -141,7 +141,7 @@ export function RandomGamePicker() {
             type="button"
             onClick={loadLibrary}
             disabled={loading}
-            className="px-6 py-2.5 rounded-xl bg-carbon-800 hover:bg-carbon-700 text-white font-semibold text-xs transition-colors shrink-0 disabled:opacity-50"
+            className="px-6 py-2.5 rounded-xl bg-carbon-surface border border-carbon-border hover:border-guacamole-400/50 text-white font-semibold text-xs transition-colors shrink-0 disabled:opacity-50"
           >
             {loading ? 'Cargando biblioteca...' : 'Cargar Biblioteca'}
           </button>
@@ -149,7 +149,7 @@ export function RandomGamePicker() {
 
         {/* Filtros de la Ruleta */}
         {games.length > 0 && (
-          <div className="mt-6 pt-5 border-t border-carbon-800/80 flex flex-wrap items-center justify-between gap-4">
+          <div className="mt-6 pt-5 border-t border-carbon-border flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
@@ -216,11 +216,11 @@ export function RandomGamePicker() {
           className={`p-6 sm:p-10 rounded-3xl border transition-all duration-300 shadow-2xl flex flex-col md:flex-row items-center gap-8 ${
             selectedGame
               ? 'bg-gradient-to-r from-carbon-900 via-carbon-900 to-guacamole-950/40 border-guacamole-500/50 shadow-guacamole-500/10'
-              : 'bg-carbon-900 border-carbon-800 animate-pulse'
+              : 'bg-carbon-card border-carbon-border animate-pulse'
           }`}
         >
           {/* Portada */}
-          <div className="relative w-72 h-36 sm:w-80 sm:h-40 rounded-2xl overflow-hidden bg-carbon-950 shrink-0 border border-carbon-700/80 shadow-xl">
+          <div className="relative w-72 h-36 sm:w-80 sm:h-40 rounded-2xl overflow-hidden bg-carbon-surface shrink-0 border border-carbon-border shadow-xl">
             <Image
               src={currentPreviewGame.headerImage}
               alt={currentPreviewGame.name}
@@ -280,7 +280,7 @@ export function RandomGamePicker() {
                   href={`https://store.steampowered.com/app/${selectedGame.appId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2.5 rounded-xl bg-carbon-800 hover:bg-carbon-700 text-white text-xs font-mono flex items-center gap-2 transition-colors border border-carbon-700"
+                  className="px-4 py-2.5 rounded-xl bg-carbon-surface hover:bg-carbon-card text-white text-xs font-mono flex items-center gap-2 transition-colors border border-carbon-border"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Ver en Steam Store</span>

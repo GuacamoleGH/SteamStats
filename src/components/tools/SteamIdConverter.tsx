@@ -51,7 +51,7 @@ export function SteamIdConverter() {
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Caja de Entrada */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-carbon-900/90 border border-carbon-800 shadow-xl backdrop-blur-sm mb-8">
+      <div className="p-6 sm:p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card mb-8">
         <label className="text-xs font-mono font-medium text-guacamole-400 flex items-center gap-2 mb-2">
           <Binary className="w-4 h-4" />
           <span>Introduce cualquier formato de identificación de Steam</span>
@@ -63,7 +63,7 @@ export function SteamIdConverter() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Pega SteamID64, STEAM_0:..., [U:1:...], AccountID o URL..."
-            className="w-full bg-carbon-950 border border-carbon-700 rounded-2xl px-4 py-3.5 text-sm sm:text-base text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 font-mono transition-colors shadow-inner"
+            className="w-full bg-carbon-surface border border-carbon-border rounded-xl px-4 py-3.5 text-sm sm:text-base text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 font-mono transition-colors shadow-inner"
           />
         </div>
 
@@ -127,9 +127,9 @@ export function SteamIdConverter() {
           />
 
           {/* URL de Perfil */}
-          <div className="md:col-span-2 p-5 sm:p-6 rounded-2xl bg-carbon-900 border border-carbon-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="md:col-span-2 p-5 sm:p-6 rounded-2xl bg-carbon-card border border-carbon-border shadow-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <span className="text-xs font-mono text-carbon-400 font-medium">
+              <span className="text-xs font-mono text-slate-400 font-medium">
                 Enlace Oficial de la Comunidad
               </span>
               <p className="text-sm font-mono font-bold text-white mt-1 break-all">
@@ -141,7 +141,7 @@ export function SteamIdConverter() {
               <button
                 type="button"
                 onClick={() => copyToClipboard(converted.profileUrl, 'url')}
-                className="px-3.5 py-2 rounded-xl bg-carbon-800 hover:bg-carbon-700 text-white text-xs font-mono flex items-center gap-1.5 transition-colors"
+                className="px-3.5 py-2 rounded-xl bg-carbon-surface border border-carbon-border hover:border-guacamole-400/40 text-white text-xs font-mono flex items-center gap-1.5 transition-colors"
               >
                 {copiedKey === 'url' ? <Check className="w-3.5 h-3.5 text-guacamole-400" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>Copiar</span>
@@ -149,7 +149,7 @@ export function SteamIdConverter() {
 
               <Link
                 href={`/profile/${converted.steamId64}`}
-                className="px-4 py-2 rounded-xl bg-guacamole-500 hover:bg-guacamole-400 text-carbon-950 text-xs font-bold font-mono flex items-center gap-1.5 transition-colors shadow"
+                className="px-4 py-2 rounded-xl bg-guacamole-400 hover:bg-guacamole-300 text-carbon-950 text-xs font-bold font-mono flex items-center gap-1.5 transition-colors shadow"
               >
                 <span>Analizar Perfil</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -158,10 +158,10 @@ export function SteamIdConverter() {
           </div>
         </div>
       ) : (
-        <div className="p-8 rounded-2xl bg-carbon-900/60 border border-carbon-800 text-center flex flex-col items-center justify-center">
+        <div className="p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card text-center flex flex-col items-center justify-center">
           <Info className="w-8 h-8 text-carbon-500 mb-2" />
           <h4 className="text-sm font-bold text-white">Formato no reconocido</h4>
-          <p className="text-xs text-carbon-400 max-w-md mt-1 leading-relaxed">
+          <p className="text-xs text-slate-400 max-w-md mt-1 leading-relaxed">
             Introduce un SteamID64 de 17 dígitos, un STEAM_0:Y:Z, un [U:1:W] o una URL directa para
             ver la conversión a todos los formatos disponibles.
           </p>
@@ -187,21 +187,21 @@ function FormatCard({
   onCopy: () => void;
 }) {
   return (
-    <div className="p-5 rounded-2xl bg-carbon-900 border border-carbon-800 hover:border-carbon-700 transition-all flex flex-col justify-between group">
+    <div className="p-5 rounded-2xl bg-carbon-card border border-carbon-border hover:border-guacamole-400/30 transition-all shadow-card flex flex-col justify-between group">
       <div>
         <div className="flex items-center justify-between gap-2 mb-2">
-          <span className="text-xs font-mono font-medium text-carbon-300">{title}</span>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-carbon-800 text-carbon-400 border border-carbon-700/60">
+          <span className="text-xs font-mono font-medium text-slate-300">{title}</span>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-carbon-surface text-slate-400 border border-carbon-border">
             {badge}
           </span>
         </div>
 
-        <div className="p-3 rounded-xl bg-carbon-950 border border-carbon-800/80 flex items-center justify-between gap-3 font-mono text-sm font-bold text-guacamole-400">
+        <div className="p-3 rounded-xl bg-carbon-surface border border-carbon-border flex items-center justify-between gap-3 font-mono text-sm font-bold text-guacamole-400">
           <span className="truncate select-all">{value}</span>
           <button
             type="button"
             onClick={onCopy}
-            className="p-1.5 rounded-lg hover:bg-carbon-800 text-carbon-400 hover:text-white transition-colors shrink-0"
+            className="p-1.5 rounded-lg hover:bg-carbon-card text-slate-400 hover:text-white transition-colors shrink-0"
             title="Copiar al portapapeles"
           >
             {copied ? <Check className="w-4 h-4 text-guacamole-400" /> : <Copy className="w-4 h-4" />}
@@ -209,7 +209,7 @@ function FormatCard({
         </div>
       </div>
 
-      <p className="text-[11px] text-carbon-400 mt-3 leading-relaxed">{description}</p>
+      <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">{description}</p>
     </div>
   );
 }

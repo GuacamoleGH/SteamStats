@@ -220,7 +220,7 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
                   </p>
                 </div>
 
-                <div className="pt-4 border-t border-carbon-800/80">
+                <div className="pt-4 border-t border-carbon-border">
                   <div className="flex items-center gap-2 text-xs font-mono text-carbon-300">
                     <Calendar className="w-3.5 h-3.5 text-guacamole-400" />
                     <span>

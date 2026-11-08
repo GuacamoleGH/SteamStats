@@ -40,9 +40,9 @@ export function AccountValueCard({ metrics }: AccountValueCardProps) {
   };
 
   return (
-    <div className="rounded-2xl border border-carbon-800 bg-carbon-900/90 p-6 backdrop-blur-sm shadow-xl">
+    <div className="p-6 sm:p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card">
       {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-carbon-800/80 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-carbon-border pb-5">
         <div>
           <span className="text-xs font-mono font-medium tracking-wider text-guacamole-400 uppercase">
             Economía de la Biblioteca
@@ -54,56 +54,56 @@ export function AccountValueCard({ metrics }: AccountValueCardProps) {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-guacamole-500/10 border border-guacamole-500/30 text-guacamole-400 text-xs font-mono">
             <span>Ahorro vs Mínimo:</span>
             <span className="font-bold text-white">-{metrics.savingsPercent}%</span>
-            <span className="text-carbon-400">({formatEur(metrics.totalSavingsEur)})</span>
+            <span className="text-slate-400">({formatEur(metrics.totalSavingsEur)})</span>
           </div>
         )}
       </div>
 
       {/* Métricas Principales */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-b border-carbon-800/80">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-b border-carbon-border">
         {/* 1. Valor Actual */}
         <div className="flex flex-col">
-          <span className="text-xs text-carbon-400 font-medium">Valor actual en tienda (ES)</span>
+          <span className="text-xs text-slate-400 font-medium">Valor actual en tienda (ES)</span>
           <div className="mt-1 flex items-baseline gap-2">
             <span className="text-3xl sm:text-4xl font-extrabold font-mono text-white tracking-tight">
               {formatEur(metrics.totalCurrentEur)}
             </span>
           </div>
-          <p className="mt-2 text-xs text-carbon-400">
+          <p className="mt-2 text-xs text-slate-400">
             Suma de precios actuales recomendados de Steam en euros.
           </p>
         </div>
 
         {/* 2. Mínimo Histórico */}
         <div className="flex flex-col">
-          <span className="text-xs text-carbon-400 font-medium">Mínimo histórico acumulado</span>
+          <span className="text-xs text-slate-400 font-medium">Mínimo histórico acumulado</span>
           <div className="mt-1 flex items-baseline gap-2">
-            <span className="text-3xl sm:text-4xl font-extrabold font-mono text-brand-cyan tracking-tight">
+            <span className="text-3xl sm:text-4xl font-extrabold font-mono text-turquoise-400 tracking-tight">
               {formatEur(metrics.totalLowestEur)}
             </span>
           </div>
-          <p className="mt-2 text-xs text-carbon-400">
+          <p className="mt-2 text-xs text-slate-400">
             Precios más bajos registrados históricamente en rebajas.
           </p>
         </div>
 
         {/* 3. Coste por hora interactivo */}
-        <div className="flex flex-col bg-carbon-800/40 rounded-xl p-4 border border-carbon-700/50">
+        <div className="flex flex-col bg-carbon-surface rounded-xl p-4 border border-carbon-border">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-carbon-300 font-medium">Coste por hora amortizado</span>
+            <span className="text-xs text-slate-300 font-medium">Coste por hora amortizado</span>
             <span className="text-xs font-mono font-bold text-guacamole-400">
               {activeCostPerHour.toFixed(2).replace('.', ',')} € / hora
             </span>
           </div>
 
-          <div className="mt-3 flex gap-1 p-0.5 bg-carbon-900 rounded-lg border border-carbon-700">
+          <div className="mt-3 flex gap-1 p-0.5 bg-carbon-card rounded-lg border border-carbon-border">
             <button
               type="button"
               onClick={() => setCostMode('all')}
               className={`flex-1 py-1 text-[11px] font-medium rounded-md transition-colors ${
                 costMode === 'all'
-                  ? 'bg-guacamole-500 text-carbon-950 font-semibold shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-950 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               Todos
@@ -113,8 +113,8 @@ export function AccountValueCard({ metrics }: AccountValueCardProps) {
               onClick={() => setCostMode('paid')}
               className={`flex-1 py-1 text-[11px] font-medium rounded-md transition-colors ${
                 costMode === 'paid'
-                  ? 'bg-guacamole-500 text-carbon-950 font-semibold shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-950 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               De pago
@@ -124,15 +124,15 @@ export function AccountValueCard({ metrics }: AccountValueCardProps) {
               onClick={() => setCostMode('played')}
               className={`flex-1 py-1 text-[11px] font-medium rounded-md transition-colors ${
                 costMode === 'played'
-                  ? 'bg-guacamole-500 text-carbon-950 font-semibold shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-950 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               Jugados
             </button>
           </div>
 
-          <p className="mt-2 text-[11px] text-carbon-400 leading-tight">
+          <p className="mt-2 text-[11px] text-slate-400 leading-tight">
             {costModeDescriptions[costMode]}
           </p>
         </div>

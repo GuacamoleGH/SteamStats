@@ -82,7 +82,7 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
   return (
     <div className="w-full">
       {/* Formulario de Entrada Dual */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-carbon-900/90 border border-carbon-800 shadow-xl backdrop-blur-sm mb-10">
+      <div className="p-6 sm:p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card mb-10">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -104,7 +104,7 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                   value={u1}
                   onChange={(e) => setU1(e.target.value)}
                   placeholder="Vanity URL, SteamID64 o enlace..."
-                  className="w-full bg-carbon-950 border border-carbon-700/80 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 transition-colors font-mono"
+                  className="w-full bg-carbon-surface border border-carbon-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 transition-colors font-mono"
                 />
               </div>
             </div>
@@ -122,13 +122,13 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                   value={u2}
                   onChange={(e) => setU2(e.target.value)}
                   placeholder="Vanity URL, SteamID64 o enlace..."
-                  className="w-full bg-carbon-950 border border-carbon-700/80 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-brand-cyan transition-colors font-mono"
+                  className="w-full bg-carbon-surface border border-carbon-border rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-brand-cyan transition-colors font-mono"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-end gap-4 pt-2 border-t border-carbon-800/80">
+          <div className="flex flex-wrap items-center justify-end gap-4 pt-2 border-t border-carbon-border">
             <button
               type="submit"
               disabled={loading}
@@ -151,10 +151,10 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
       {result && (
         <div className="flex flex-col gap-8">
           {/* Tarjeta de Enfrentamiento (Versus) */}
-          <div className="rounded-3xl border border-carbon-800 bg-carbon-900/90 p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+          <div className="rounded-2xl border border-carbon-border bg-carbon-card p-6 sm:p-8 shadow-card">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
               {/* Jugador A */}
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-carbon-950/70 border border-guacamole-500/20">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-carbon-surface border border-guacamole-500/20">
                 <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-guacamole-400 shrink-0">
                   <Image
                     src={result.profileA.avatarUrl}
@@ -176,7 +176,7 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                     <span className="px-2 py-0.5 rounded-md bg-guacamole-500/20 text-guacamole-400 font-mono font-bold text-xs border border-guacamole-500/30">
                       Nivel {result.profileA.steamLevel}
                     </span>
-                    <span className="text-xs font-mono text-carbon-400">
+                    <span className="text-xs font-mono text-slate-400">
                       {formatNumber(result.profileA.stats.totalGames)} juegos
                     </span>
                   </div>
@@ -185,17 +185,17 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
 
               {/* VS Central Badge */}
               <div className="flex flex-col items-center justify-center text-center">
-                <div className="w-12 h-12 rounded-2xl bg-carbon-800 border border-carbon-700 flex items-center justify-center shadow-lg font-mono font-extrabold text-lg text-white">
+                <div className="w-12 h-12 rounded-2xl bg-carbon-surface border border-carbon-border flex items-center justify-center shadow-lg font-mono font-extrabold text-lg text-white">
                   VS
                 </div>
-                <span className="text-xs font-mono text-carbon-400 mt-2 font-medium">
+                <span className="text-xs font-mono text-slate-400 mt-2 font-medium">
                   {result.metrics.sharedCount} juegos en común
                 </span>
               </div>
 
               {/* Jugador B */}
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-carbon-950/70 border border-brand-cyan/20">
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-brand-cyan shrink-0">
+              <div className="flex items-center gap-4 p-4 rounded-2xl bg-carbon-surface border border-turquoise-500/20">
+                <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-turquoise-400 shrink-0">
                   <Image
                     src={result.profileB.avatarUrl}
                     alt={result.profileB.personaName}
@@ -206,17 +206,17 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                   />
                 </div>
                 <div className="min-w-0">
-                  <span className="text-[10px] font-mono uppercase text-brand-cyan font-bold tracking-wider">
+                  <span className="text-[10px] font-mono uppercase text-turquoise-400 font-bold tracking-wider">
                     Jugador B
                   </span>
                   <h3 className="text-lg font-bold text-white truncate">
                     {result.profileB.personaName}
                   </h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="px-2 py-0.5 rounded-md bg-brand-cyan/20 text-brand-cyan font-mono font-bold text-xs border border-brand-cyan/30">
+                    <span className="px-2 py-0.5 rounded-md bg-turquoise-500/20 text-turquoise-400 font-mono font-bold text-xs border border-turquoise-500/30">
                       Nivel {result.profileB.steamLevel}
                     </span>
-                    <span className="text-xs font-mono text-carbon-400">
+                    <span className="text-xs font-mono text-slate-400">
                       {formatNumber(result.profileB.stats.totalGames)} juegos
                     </span>
                   </div>
@@ -225,9 +225,9 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
             </div>
 
             {/* Barras de Comparación Cara a Cara */}
-            <div className="mt-8 pt-6 border-t border-carbon-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="mt-8 pt-6 border-t border-carbon-border grid grid-cols-1 sm:grid-cols-3 gap-4">
               {/* Horas Totales */}
-              <div className="p-4 rounded-xl bg-carbon-950 border border-carbon-800 flex flex-col justify-between">
+              <div className="p-4 rounded-xl bg-carbon-surface border border-carbon-border flex flex-col justify-between">
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-guacamole-400 font-bold">
                     {formatHours(result.profileA.stats.totalPlaytimeHours)} h
@@ -254,17 +254,17 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
               </div>
 
               {/* Nivel */}
-              <div className="p-4 rounded-xl bg-carbon-950 border border-carbon-800 flex flex-col justify-between">
+              <div className="p-4 rounded-xl bg-carbon-surface border border-carbon-border flex flex-col justify-between">
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-guacamole-400 font-bold">
                     Lvl {result.profileA.steamLevel}
                   </span>
-                  <span className="text-carbon-400 font-medium">Nivel de Steam</span>
-                  <span className="text-brand-cyan font-bold">
+                  <span className="text-slate-400 font-medium">Nivel de Steam</span>
+                  <span className="text-turquoise-400 font-bold">
                     Lvl {result.profileB.steamLevel}
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-carbon-800 overflow-hidden flex">
+                <div className="w-full h-2 rounded-full bg-carbon-card overflow-hidden flex">
                   <div
                     className="bg-guacamole-400 h-full"
                     style={{
@@ -275,22 +275,22 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                       }%`,
                     }}
                   />
-                  <div className="bg-brand-cyan h-full flex-1" />
+                  <div className="bg-turquoise-400 h-full flex-1" />
                 </div>
               </div>
 
               {/* Valor de Biblioteca */}
-              <div className="p-4 rounded-xl bg-carbon-950 border border-carbon-800 flex flex-col justify-between">
+              <div className="p-4 rounded-xl bg-carbon-surface border border-carbon-border flex flex-col justify-between">
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-guacamole-400 font-bold">
                     {formatEur(result.profileA.accountValue.totalCurrentEur)}
                   </span>
-                  <span className="text-carbon-400 font-medium">Valor Cuenta</span>
-                  <span className="text-brand-cyan font-bold">
+                  <span className="text-slate-400 font-medium">Valor Cuenta</span>
+                  <span className="text-turquoise-400 font-bold">
                     {formatEur(result.profileB.accountValue.totalCurrentEur)}
                   </span>
                 </div>
-                <div className="w-full h-2 rounded-full bg-carbon-800 overflow-hidden flex">
+                <div className="w-full h-2 rounded-full bg-carbon-card overflow-hidden flex">
                   <div
                     className="bg-guacamole-400 h-full"
                     style={{
@@ -302,21 +302,21 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                       }%`,
                     }}
                   />
-                  <div className="bg-brand-cyan h-full flex-1" />
+                  <div className="bg-turquoise-400 h-full flex-1" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Selector de Pestañas */}
-          <div className="flex items-center gap-2 p-1 bg-carbon-900 rounded-2xl border border-carbon-800 w-fit">
+          <div className="flex items-center gap-2 p-1 bg-carbon-surface rounded-2xl border border-carbon-border w-fit">
             <button
               type="button"
               onClick={() => setActiveTab('shared')}
               className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all ${
                 activeTab === 'shared'
-                  ? 'bg-guacamole-500 text-carbon-950 shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-950 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               🎮 Juegos en común ({result.sharedGames.length})
@@ -326,8 +326,8 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
               onClick={() => setActiveTab('onlyA')}
               className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all ${
                 activeTab === 'onlyA'
-                  ? 'bg-guacamole-500 text-carbon-950 shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-950 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               Solo {result.profileA.personaName} ({result.onlyAGames.length})
@@ -337,8 +337,8 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
               onClick={() => setActiveTab('onlyB')}
               className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all ${
                 activeTab === 'onlyB'
-                  ? 'bg-guacamole-500 text-carbon-950 shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-950 font-bold shadow'
+                  : 'text-slate-400 hover:text-white'
               }`}
             >
               Solo {result.profileB.personaName} ({result.onlyBGames.length})
@@ -347,10 +347,10 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
 
           {/* Tabla de Juegos en Común */}
           {activeTab === 'shared' && (
-            <div className="p-6 rounded-2xl bg-carbon-900/90 border border-carbon-800 shadow-xl overflow-x-auto">
+            <div className="p-6 rounded-2xl bg-carbon-card border border-carbon-border shadow-card overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-carbon-800 text-xs font-semibold text-carbon-400 uppercase tracking-wider">
+                  <tr className="border-b border-carbon-border text-xs font-semibold text-slate-400 uppercase tracking-wider">
                     <th className="py-3 px-3">Juego</th>
                     <th className="py-3 px-3 w-36 text-right text-guacamole-400">
                       {result.profileA.personaName}
@@ -369,11 +369,11 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                     const pctA = Math.round((game.hoursA / total) * 100);
 
                     return (
-                      <tr key={game.appId} className="hover:bg-carbon-800/40 transition-colors">
+                      <tr key={game.appId} className="hover:bg-carbon-surface transition-colors">
                         {/* Portada y Título */}
                         <td className="py-3.5 px-3">
                           <div className="flex items-center gap-3">
-                            <div className="relative w-16 h-8 rounded overflow-hidden bg-carbon-950 shrink-0 border border-carbon-800">
+                            <div className="relative w-16 h-8 rounded overflow-hidden bg-carbon-surface shrink-0 border border-carbon-border">
                               <Image
                                 src={game.headerImage}
                                 alt={game.name}
@@ -398,15 +398,15 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
 
                         {/* Barra Proporcional */}
                         <td className="py-3.5 px-3">
-                          <div className="w-full h-2 rounded-full bg-carbon-800 overflow-hidden flex">
+                          <div className="w-full h-2 rounded-full bg-carbon-card overflow-hidden flex">
                             <div className="bg-guacamole-400 h-full" style={{ width: `${pctA}%` }} />
-                            <div className="bg-brand-cyan h-full flex-1" />
+                            <div className="bg-turquoise-400 h-full flex-1" />
                           </div>
                         </td>
 
                         {/* Horas Jugador B */}
                         <td className="py-3.5 px-3 text-right font-mono text-xs">
-                          <span className={game.leader === 'B' ? 'font-bold text-brand-cyan' : 'text-slate-300'}>
+                          <span className={game.leader === 'B' ? 'font-bold text-turquoise-400' : 'text-slate-300'}>
                             {formatHours(game.hoursB)} h
                           </span>
                         </td>
@@ -422,7 +422,7 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
                             href={`https://store.steampowered.com/app/${game.appId}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 rounded-md hover:bg-carbon-800 text-carbon-400 hover:text-white inline-flex items-center justify-center transition-colors"
+                            className="p-1.5 rounded-md hover:bg-carbon-surface text-slate-400 hover:text-white inline-flex items-center justify-center transition-colors"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
@@ -469,8 +469,8 @@ function ExclusiveGamesTable({
 }) {
   if (games.length === 0) {
     return (
-      <div className="p-8 rounded-2xl bg-carbon-900 border border-carbon-800 text-center">
-        <p className="text-carbon-400 text-xs">
+      <div className="p-8 rounded-2xl bg-carbon-card border border-carbon-border text-center">
+        <p className="text-slate-400 text-xs">
           No hay juegos exclusivos en la biblioteca de {playerName}.
         </p>
       </div>
@@ -478,21 +478,21 @@ function ExclusiveGamesTable({
   }
 
   return (
-    <div className="p-6 rounded-2xl bg-carbon-900/90 border border-carbon-800 shadow-xl overflow-x-auto">
+    <div className="p-6 rounded-2xl bg-carbon-card border border-carbon-border shadow-card overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="border-b border-carbon-800 text-xs font-semibold text-carbon-400 uppercase tracking-wider">
+          <tr className="border-b border-carbon-border text-xs font-semibold text-slate-400 uppercase tracking-wider">
             <th className="py-3 px-3">Juego</th>
             <th className="py-3 px-3 w-36 text-right">Tiempo Registrado</th>
             <th className="py-3 px-3 w-16 text-center">Tienda</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-carbon-800/60 text-sm">
+        <tbody className="divide-y divide-carbon-border text-sm">
           {games.map((game) => (
-            <tr key={game.appId} className="hover:bg-carbon-800/40 transition-colors">
+            <tr key={game.appId} className="hover:bg-carbon-surface transition-colors">
               <td className="py-3.5 px-3">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-16 h-8 rounded overflow-hidden bg-carbon-950 shrink-0 border border-carbon-800">
+                  <div className="relative w-16 h-8 rounded overflow-hidden bg-carbon-surface shrink-0 border border-carbon-border">
                     <Image
                       src={game.headerImage}
                       alt={game.name}

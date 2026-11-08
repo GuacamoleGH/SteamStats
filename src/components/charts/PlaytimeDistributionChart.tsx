@@ -31,16 +31,16 @@ interface PlaytimeDistributionChartProps {
 
 export function PlaytimeDistributionChart({ data }: PlaytimeDistributionChartProps) {
   return (
-    <div className="rounded-2xl border border-carbon-800 bg-carbon-900/90 p-6 backdrop-blur-sm shadow-xl flex flex-col justify-between">
+    <div className="p-6 sm:p-8 rounded-2xl bg-carbon-card border border-carbon-border shadow-card flex flex-col justify-between">
       {/* Cabecera */}
-      <div className="flex items-center justify-between border-b border-carbon-800/80 pb-4 mb-4">
+      <div className="flex items-center justify-between border-b border-carbon-border pb-4 mb-4">
         <div>
           <span className="text-xs font-mono font-medium tracking-wider text-guacamole-400 uppercase">
             Tiempo de Juego
           </span>
           <h3 className="text-lg font-bold text-white mt-0.5">Distribución por Horas</h3>
         </div>
-        <span className="text-xs font-mono text-carbon-400">Juegos por rango</span>
+        <span className="text-xs font-mono text-slate-400">Juegos por rango</span>
       </div>
 
       {/* Gráfica */}
@@ -73,7 +73,7 @@ export function PlaytimeDistributionChart({ data }: PlaytimeDistributionChartPro
                 if (active && payload && payload.length) {
                   const item = payload[0].payload as DistributionBucket;
                   return (
-                    <div className="rounded-lg border border-carbon-700 bg-carbon-950/95 px-3 py-2 shadow-xl backdrop-blur-md">
+                    <div className="rounded-lg border border-carbon-border bg-carbon-surface/95 px-3 py-2 shadow-xl backdrop-blur-md">
                       <p className="text-xs font-mono text-carbon-400">{item.name}</p>
                       <p className="text-sm font-mono font-bold text-guacamole-400 mt-0.5">
                         {item.count} {item.count === 1 ? 'juego' : 'juegos'}
@@ -100,7 +100,7 @@ export function PlaytimeDistributionChart({ data }: PlaytimeDistributionChartPro
       </div>
 
       {/* Leyenda sutil */}
-      <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-carbon-400 border-t border-carbon-800/60 pt-3">
+      <div className="mt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-carbon-border pt-3">
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-sm bg-guacamole-400 inline-block"></span>
           Juegos jugados
