@@ -48,6 +48,14 @@
     border-radius: 6px;
   }
 
+  /* Dark mode enforcement for native select/options across all browsers */
+  select,
+  option {
+    background-color: #12151b !important;
+    color: #f0f4f8 !important;
+    color-scheme: dark !important;
+  }
+
   /* Reset outline on text inputs whose container handles focus-within */
   input,
   textarea {

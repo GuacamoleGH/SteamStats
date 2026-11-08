@@ -13,7 +13,7 @@
  * @spec REQ-10, RNF-04, RNF-05
  */
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Image from 'next/image';
 import {
   Calendar,
@@ -25,6 +25,7 @@ import {
   Tag,
   Check,
   RotateCcw,
+  ChevronDown,
 } from 'lucide-react';
 import { IGDBReleaseGame } from '@/lib/igdb/types';
 import { filterReleases } from '@/lib/igdb/api';
@@ -43,6 +44,24 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
   const [onlyInterested, setOnlyInterested] = useState(false);
   const [interestedIds, setInterestedIds] = useState<Set<number>>(new Set());
   const [mounted, setMounted] = useState(false);
+  const [monthMenuOpen, setMonthMenuOpen] = useState(false);
+  const [genreMenuOpen, setGenreMenuOpen] = useState(false);
+  const monthMenuRef = useRef<HTMLDivElement>(null);
+  const genreMenuRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar menús al hacer clic fuera
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (monthMenuRef.current && !monthMenuRef.current.contains(e.target as Node)) {
+        setMonthMenuOpen(false);
+      }
+      if (genreMenuRef.current && !genreMenuRef.current.contains(e.target as Node)) {
+        setGenreMenuOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Cargar deseados de localStorage en montaje
   useEffect(() => {
@@ -153,17 +172,17 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
   return (
     <div className="w-full">
       {/* Barra de Filtros y Búsqueda */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-carbon-900/90 border border-carbon-800 shadow-xl backdrop-blur-sm mb-8">
+      <div className="p-5 sm:p-6 rounded-2xl bg-carbon-card border border-guacamole-500/30 shadow-xl backdrop-blur-sm mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           {/* Pestañas: Todos vs Deseados */}
-          <div className="flex items-center gap-2 p-1 bg-carbon-950 rounded-xl border border-carbon-800 w-fit">
+          <div className="flex items-center gap-1.5 p-1.5 bg-carbon-deep rounded-xl border border-guacamole-500/40 w-fit">
             <button
               type="button"
               onClick={() => setOnlyInterested(false)}
-              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
                 !onlyInterested
-                  ? 'bg-guacamole-500 text-carbon-950 shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-deep shadow-glow'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
               Todos los juegos ({releases.length})
@@ -171,15 +190,19 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
             <button
               type="button"
               onClick={() => setOnlyInterested(true)}
-              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+              className={`px-4 py-2 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
                 onlyInterested
-                  ? 'bg-guacamole-500 text-carbon-950 shadow'
-                  : 'text-carbon-400 hover:text-white'
+                  ? 'bg-guacamole-400 text-carbon-deep shadow-glow'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
               <Heart
                 className={`w-3.5 h-3.5 ${
-                  mounted && interestedIds.size > 0 ? 'fill-current text-rose-500' : ''
+                  onlyInterested
+                    ? 'fill-carbon-deep text-carbon-deep'
+                    : mounted && interestedIds.size > 0
+                    ? 'fill-current text-rose-500'
+                    : ''
                 }`}
               />
               <span>Mis deseados ({mounted ? interestedIds.size : 0})</span>
@@ -188,56 +211,156 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
 
           {/* Buscador de Texto */}
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-carbon-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-guacamole-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por título o descripción..."
-              className="w-full bg-carbon-950 border border-carbon-700/80 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 transition-colors"
+              className="w-full bg-carbon-deep border border-guacamole-500/40 hover:border-guacamole-400/60 focus:border-guacamole-400 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 transition-colors"
             />
           </div>
 
-          {/* Selectores de Mes y Género */}
+          {/* Selectores Personalizados de Mes y Género */}
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Mes */}
-            <div className="flex items-center gap-1.5 bg-carbon-950 border border-carbon-700/80 rounded-xl px-3 py-1.5">
-              <Calendar className="w-3.5 h-3.5 text-guacamole-400" />
-              <select
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                aria-label="Filtrar por mes de estreno"
-                className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer"
+            <div className="relative" ref={monthMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setMonthMenuOpen(!monthMenuOpen);
+                  setGenreMenuOpen(false);
+                }}
+                className="flex items-center gap-2 bg-carbon-deep border border-guacamole-500/40 hover:border-guacamole-400 rounded-xl px-3 py-2 text-xs text-slate-200 transition-all cursor-pointer shadow-sm"
+                aria-haspopup="listbox"
+                aria-expanded={monthMenuOpen}
               >
-                <option value="all" className="bg-carbon-950 text-slate-200">
-                  Todos los meses
-                </option>
-                {availableMonths.map((m) => (
-                  <option key={m} value={m} className="bg-carbon-950 text-slate-200">
-                    {formatMonthOption(m)}
-                  </option>
-                ))}
-              </select>
+                <Calendar className="w-3.5 h-3.5 text-guacamole-400" />
+                <span className="font-medium">
+                  {selectedMonth === 'all' ? 'Todos los meses' : formatMonthOption(selectedMonth)}
+                </span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-slate-400 transition-transform ${
+                    monthMenuOpen ? 'rotate-180 text-guacamole-400' : ''
+                  }`}
+                />
+              </button>
+
+              {monthMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 rounded-xl bg-carbon-card border border-guacamole-500/40 shadow-2xl z-50 p-1.5 animate-in fade-in zoom-in-95 duration-100 max-h-64 overflow-y-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedMonth('all');
+                      setMonthMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left ${
+                      selectedMonth === 'all'
+                        ? 'bg-guacamole-500/15 text-guacamole-400 font-bold'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    <span>Todos los meses</span>
+                    {selectedMonth === 'all' && (
+                      <Check className="w-3.5 h-3.5 text-guacamole-400" />
+                    )}
+                  </button>
+
+                  {availableMonths.map((m) => {
+                    const isSelected = selectedMonth === m;
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMonth(m);
+                          setMonthMenuOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left ${
+                          isSelected
+                            ? 'bg-guacamole-500/15 text-guacamole-400 font-bold'
+                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <span>{formatMonthOption(m)}</span>
+                        {isSelected && (
+                          <Check className="w-3.5 h-3.5 text-guacamole-400" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Género */}
-            <div className="flex items-center gap-1.5 bg-carbon-950 border border-carbon-700/80 rounded-xl px-3 py-1.5">
-              <Tag className="w-3.5 h-3.5 text-brand-cyan" />
-              <select
-                value={selectedGenre}
-                onChange={(e) => setSelectedGenre(e.target.value)}
-                aria-label="Filtrar por género"
-                className="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer"
+            <div className="relative" ref={genreMenuRef}>
+              <button
+                type="button"
+                onClick={() => {
+                  setGenreMenuOpen(!genreMenuOpen);
+                  setMonthMenuOpen(false);
+                }}
+                className="flex items-center gap-2 bg-carbon-deep border border-guacamole-500/40 hover:border-guacamole-400 rounded-xl px-3 py-2 text-xs text-slate-200 transition-all cursor-pointer shadow-sm"
+                aria-haspopup="listbox"
+                aria-expanded={genreMenuOpen}
               >
-                <option value="all" className="bg-carbon-950 text-slate-200">
-                  Todos los géneros
-                </option>
-                {availableGenres.map((g) => (
-                  <option key={g} value={g} className="bg-carbon-950 text-slate-200">
-                    {g}
-                  </option>
-                ))}
-              </select>
+                <Tag className="w-3.5 h-3.5 text-turquoise-400" />
+                <span className="font-medium">
+                  {selectedGenre === 'all' ? 'Todos los géneros' : selectedGenre}
+                </span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-slate-400 transition-transform ${
+                    genreMenuOpen ? 'rotate-180 text-guacamole-400' : ''
+                  }`}
+                />
+              </button>
+
+              {genreMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 rounded-xl bg-carbon-card border border-guacamole-500/40 shadow-2xl z-50 p-1.5 animate-in fade-in zoom-in-95 duration-100 max-h-64 overflow-y-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedGenre('all');
+                      setGenreMenuOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left ${
+                      selectedGenre === 'all'
+                        ? 'bg-guacamole-500/15 text-guacamole-400 font-bold'
+                        : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    <span>Todos los géneros</span>
+                    {selectedGenre === 'all' && (
+                      <Check className="w-3.5 h-3.5 text-guacamole-400" />
+                    )}
+                  </button>
+
+                  {availableGenres.map((g) => {
+                    const isSelected = selectedGenre === g;
+                    return (
+                      <button
+                        key={g}
+                        type="button"
+                        onClick={() => {
+                          setSelectedGenre(g);
+                          setGenreMenuOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors text-left ${
+                          isSelected
+                            ? 'bg-guacamole-500/15 text-guacamole-400 font-bold'
+                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <span>{g}</span>
+                        {isSelected && (
+                          <Check className="w-3.5 h-3.5 text-guacamole-400" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Reset */}
@@ -245,7 +368,7 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="p-2 rounded-xl text-carbon-400 hover:text-white hover:bg-carbon-800 transition-colors"
+                className="p-2 rounded-xl text-slate-400 hover:text-guacamole-400 hover:bg-carbon-surface border border-transparent hover:border-guacamole-500/30 transition-all"
                 title="Limpiar filtros"
               >
                 <RotateCcw className="w-4 h-4" />
@@ -257,7 +380,7 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
 
       {/* Grid de Tarjetas de Juegos */}
       {filteredGames.length === 0 ? (
-        <div className="p-12 rounded-2xl bg-carbon-900/60 border border-carbon-800 text-center flex flex-col items-center justify-center">
+        <div className="p-12 rounded-2xl bg-carbon-card border border-guacamole-500/20 text-center flex flex-col items-center justify-center">
           <Gamepad2 className="w-10 h-10 text-carbon-500 mb-3" />
           <h3 className="text-base font-bold text-white mb-1">
             No se encontraron lanzamientos
@@ -281,7 +404,7 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
             return (
               <div
                 key={game.id}
-                className="group rounded-2xl bg-carbon-900 border border-carbon-800 hover:border-guacamole-400/40 transition-all shadow-lg flex flex-col justify-between overflow-hidden"
+                className="group rounded-2xl bg-carbon-card border border-guacamole-500/20 hover:border-guacamole-400/60 transition-all shadow-lg flex flex-col justify-between overflow-hidden"
               >
                 <div>
                   {/* Portada con insignia de estreno */}
