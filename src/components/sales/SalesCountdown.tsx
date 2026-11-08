@@ -62,7 +62,7 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
   return (
     <div className="w-full">
       {/* Tarjeta Principal del Temporizador */}
-      <div className="relative overflow-hidden rounded-3xl border border-carbon-800 bg-gradient-to-b from-carbon-900 to-carbon-950 p-6 sm:p-10 shadow-2xl backdrop-blur-xl mb-12">
+      <div className="relative overflow-hidden rounded-3xl border border-guacamole-500/30 bg-gradient-to-b from-carbon-900 to-carbon-950 p-6 sm:p-10 shadow-2xl backdrop-blur-xl mb-12">
         {/* Resplandor decorativo de fondo */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-guacamole-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -95,18 +95,18 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
           {/* Reloj de Cuenta Atrás (Días, Horas, Minutos, Segundos) */}
           {countdown && (
             <div className="grid grid-cols-4 gap-2 sm:gap-4 w-full max-w-xl mb-8">
-              {/* Días */}
-              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-carbon-700/60 shadow-lg">
-                <span className="text-2xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
+              {/* Días (Destacado en verde) */}
+              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-guacamole-500/10 border-2 border-guacamole-400 shadow-glow relative">
+                <span className="text-2xl sm:text-5xl font-extrabold font-mono text-guacamole-400 tracking-tight">
                   {countdown.days.toString().padStart(2, '0')}
                 </span>
-                <span className="text-[10px] sm:text-xs font-mono uppercase text-carbon-400 mt-1 font-semibold">
+                <span className="text-[10px] sm:text-xs font-mono uppercase text-guacamole-400 mt-1 font-bold">
                   Días
                 </span>
               </div>
 
               {/* Horas */}
-              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-carbon-700/60 shadow-lg">
+              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-guacamole-500/40 shadow-lg hover:border-guacamole-400/60 transition-colors">
                 <span className="text-2xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
                   {countdown.hours.toString().padStart(2, '0')}
                 </span>
@@ -116,7 +116,7 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
               </div>
 
               {/* Minutos */}
-              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-carbon-700/60 shadow-lg">
+              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-guacamole-500/40 shadow-lg hover:border-guacamole-400/60 transition-colors">
                 <span className="text-2xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
                   {countdown.minutes.toString().padStart(2, '0')}
                 </span>
@@ -125,12 +125,12 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
                 </span>
               </div>
 
-              {/* Segundos */}
-              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-guacamole-500/30 shadow-lg relative">
-                <span className="text-2xl sm:text-5xl font-extrabold font-mono text-guacamole-400 tracking-tight">
+              {/* Segundos (Marco en verde, números normales) */}
+              <div className="flex flex-col items-center justify-center p-3 sm:p-5 rounded-2xl bg-carbon-900/90 border border-guacamole-500/40 shadow-lg hover:border-guacamole-400/60 transition-colors relative">
+                <span className="text-2xl sm:text-5xl font-extrabold font-mono text-white tracking-tight">
                   {countdown.seconds.toString().padStart(2, '0')}
                 </span>
-                <span className="text-[10px] sm:text-xs font-mono uppercase text-guacamole-400 mt-1 font-semibold">
+                <span className="text-[10px] sm:text-xs font-mono uppercase text-carbon-400 mt-1 font-semibold">
                   Segundos
                 </span>
               </div>
@@ -154,7 +154,7 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
           )}
 
           {/* Información de Zona Horaria Local */}
-          <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-mono text-carbon-400 border-t border-carbon-800/80 pt-5 w-full">
+          <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-mono text-carbon-400 border-t border-guacamole-500/20 pt-5 w-full">
             <Clock className="w-4 h-4 text-guacamole-400" />
             <span>
               {status.isSaleActive ? 'Finaliza el: ' : 'Comienza el: '}
@@ -192,7 +192,7 @@ export function SalesCountdown({ sales }: SalesCountdownProps) {
                   isLive
                     ? 'bg-carbon-900 border-emerald-500/50 shadow-lg shadow-emerald-500/10'
                     : isUpcoming
-                    ? 'bg-carbon-900/80 border-carbon-800 hover:border-amber-500/40'
+                    ? 'bg-carbon-900/80 border-guacamole-500/30 hover:border-guacamole-400/60'
                     : 'bg-carbon-950/60 border-carbon-900 opacity-60'
                 }`}
               >
