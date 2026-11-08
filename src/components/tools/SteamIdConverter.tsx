@@ -30,7 +30,7 @@ import {
 } from '@/lib/steam/steamid-converter';
 
 export function SteamIdConverter() {
-  const [input, setInput] = useState('76561198337759875');
+  const [input, setInput] = useState('');
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const converted: ConvertedSteamIDs | null = parseAndConvertAnySteamId(input);
@@ -42,10 +42,10 @@ export function SteamIdConverter() {
   };
 
   const sampleValues = [
-    { label: 'SteamID64', val: '76561198337759875' },
-    { label: 'SteamID2', val: 'STEAM_0:1:188747073' },
-    { label: 'SteamID3', val: '[U:1:377494147]' },
-    { label: 'AccountID', val: '377494147' },
+    { label: 'SteamID64', val: '76561197960287930' },
+    { label: 'SteamID2', val: 'STEAM_0:0:11101' },
+    { label: 'SteamID3', val: '[U:1:22202]' },
+    { label: 'AccountID', val: '22202' },
   ];
 
   return (

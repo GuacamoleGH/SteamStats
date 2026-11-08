@@ -79,12 +79,6 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
     }
   }, [initialU1, initialU2]);
 
-  const loadSample = () => {
-    setU1('GuacamoleSteam');
-    setU2('76561198337759875');
-    executeCompare('GuacamoleSteam', '76561198337759875');
-  };
-
   return (
     <div className="w-full">
       {/* Formulario de Entrada Dual */}
@@ -134,20 +128,11 @@ export function CompareView({ initialU1 = '', initialU2 = '' }: CompareViewProps
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-carbon-800/80">
-            <button
-              type="button"
-              onClick={loadSample}
-              className="text-xs font-mono text-carbon-400 hover:text-guacamole-400 transition-colors flex items-center gap-1.5"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-guacamole-400" />
-              <span>Probar con perfil de ejemplo</span>
-            </button>
-
+          <div className="flex flex-wrap items-center justify-end gap-4 pt-2 border-t border-carbon-800/80">
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-guacamole-400 to-brand-cyan hover:opacity-95 text-carbon-950 font-bold text-sm transition-all shadow-lg flex items-center gap-2 disabled:opacity-50 ml-auto"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-guacamole-400 to-brand-cyan hover:opacity-95 text-carbon-950 font-bold text-sm transition-all shadow-lg flex items-center gap-2 disabled:opacity-50"
             >
               <GitCompare className="w-4 h-4" />
               <span>{loading ? 'Comparando...' : 'Comparar Perfiles'}</span>

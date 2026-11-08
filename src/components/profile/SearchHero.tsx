@@ -149,26 +149,6 @@ export const SearchHero: React.FC = () => {
             <span>{error}</span>
           </div>
         )}
-
-        {/* Perfil de ejemplo sugerido */}
-        <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
-          <span>Prueba rápida:</span>
-          <button
-            type="button"
-            onClick={() => handleExampleClick('GuacamoleSteam')}
-            className="font-mono text-guacamole-400 hover:text-guacamole-300 underline underline-offset-4 cursor-pointer"
-          >
-            GuacamoleSteam
-          </button>
-          <span>o</span>
-          <button
-            type="button"
-            onClick={() => handleExampleClick('76561198337759875')}
-            className="font-mono text-slate-300 hover:text-white underline underline-offset-4 cursor-pointer"
-          >
-            76561198337759875
-          </button>
-        </div>
       </div>
     </section>
   );

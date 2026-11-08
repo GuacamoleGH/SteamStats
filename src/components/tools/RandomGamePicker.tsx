@@ -31,7 +31,7 @@ import { formatHours, formatEurFromCents } from '@/lib/formatters';
 type FilterMode = 'all' | 'unplayed' | 'under2h' | 'played';
 
 export function RandomGamePicker() {
-  const [profileInput, setProfileInput] = useState('GuacamoleSteam');
+  const [profileInput, setProfileInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [games, setGames] = useState<ProfileGameItem[]>([]);
   const [filterMode, setFilterMode] = useState<FilterMode>('all');
@@ -132,7 +132,7 @@ export function RandomGamePicker() {
               type="text"
               value={profileInput}
               onChange={(e) => setProfileInput(e.target.value)}
-              placeholder="Introduce SteamID64 o Vanity URL..."
+              placeholder="Introduce tu SteamID64, enlace o vanity..."
               className="w-full bg-carbon-950 border border-carbon-700 rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-carbon-500 focus:outline-none focus:border-guacamole-400 font-mono transition-colors"
             />
           </div>
