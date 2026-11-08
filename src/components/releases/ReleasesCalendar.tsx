@@ -162,6 +162,20 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
     return `En ${days} días`;
   };
 
+  // Limpiar nombres de plataformas para que no desborden
+  const cleanPlatformName = (name: string) => {
+    return name
+      .replace('PC (Microsoft Windows)', 'PC')
+      .replace('Microsoft Windows', 'Windows')
+      .replace('Nintendo Switch 2', 'Switch 2')
+      .replace('Nintendo Switch', 'Switch')
+      .replace('PlayStation 5', 'PS5')
+      .replace('PlayStation 4', 'PS4')
+      .replace('Xbox Series X/S', 'Xbox')
+      .replace('Xbox Series X|S', 'Xbox')
+      .replace('Xbox One', 'XOne');
+  };
+
   const resetFilters = () => {
     setSearchQuery('');
     setSelectedMonth('all');
@@ -404,11 +418,11 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
             return (
               <div
                 key={game.id}
-                className="group rounded-2xl bg-carbon-card border border-guacamole-500/20 hover:border-guacamole-400/60 transition-all shadow-lg flex flex-col justify-between overflow-hidden"
+                className="group rounded-2xl bg-carbon-card border border-guacamole-500/20 hover:border-guacamole-400/60 transition-all shadow-lg flex flex-col justify-between overflow-hidden h-full"
               >
-                <div>
-                  {/* Portada con insignia de estreno */}
-                  <div className="relative aspect-[3/4] w-full bg-carbon-950 overflow-hidden">
+                <div className="flex-1 flex flex-col">
+                  {/* Portada con insignia de estreno y botón Me Interesa */}
+                  <div className="relative aspect-[3/4] w-full bg-carbon-deep overflow-hidden shrink-0">
                     {game.coverUrl ? (
                       <Image
                         src={game.coverUrl}
@@ -419,62 +433,69 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
                         unoptimized
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-carbon-600 font-mono text-xs">
+                      <div className="w-full h-full flex items-center justify-center text-slate-500 font-mono text-xs">
                         Sin Portada
                       </div>
                     )}
 
+                    {/* Gradiente superior protector para que el badge y el corazón contrasten siempre al 100% */}
+                    <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/90 via-black/50 to-transparent pointer-events-none z-10" />
+
                     {/* Gradiente inferior en portada */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-carbon-900 via-transparent to-transparent pointer-events-none" />
+                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-carbon-card via-carbon-card/50 to-transparent pointer-events-none z-10" />
 
                     {/* Insignia de Días Restantes */}
-                    <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-carbon-950/80 backdrop-blur-md border border-carbon-700/60 text-[11px] font-mono font-bold text-guacamole-400 shadow">
-                      {getDaysUntil(game.releaseDate)}
+                    <div className="absolute top-3 left-3 px-3 py-1.5 rounded-lg bg-carbon-deep/95 border border-guacamole-400/60 text-[11px] font-mono font-bold text-guacamole-400 shadow-xl z-20 backdrop-blur-md flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3 text-guacamole-400" />
+                      <span>{getDaysUntil(game.releaseDate)}</span>
                     </div>
 
                     {/* Botón Flotante "Me Interesa" */}
                     <button
                       type="button"
                       onClick={() => toggleInterest(game.id)}
-                      className={`absolute top-3 right-3 p-2 rounded-xl backdrop-blur-md border transition-all ${
+                      className={`absolute top-3 right-3 p-2 rounded-xl border transition-all z-20 cursor-pointer shadow-xl backdrop-blur-md ${
                         isInterested
-                          ? 'bg-rose-500/20 border-rose-500 text-rose-400 shadow-lg shadow-rose-500/20'
-                          : 'bg-carbon-950/70 border-carbon-700/60 text-carbon-400 hover:text-white hover:border-carbon-500'
+                          ? 'bg-rose-500/25 border-rose-500 text-rose-400 shadow-rose-500/30'
+                          : 'bg-carbon-deep/95 border-white/20 hover:border-rose-400 text-slate-300 hover:text-rose-400'
                       }`}
                       aria-label={isInterested ? 'Quitar de deseados' : 'Marcar como deseado'}
                       title={isInterested ? 'Quitar de deseados' : 'Marcar como deseado'}
                     >
                       <Heart
                         className={`w-4 h-4 transition-transform active:scale-125 ${
-                          isInterested ? 'fill-current' : ''
+                          isInterested ? 'fill-current text-rose-500' : ''
                         }`}
                       />
                     </button>
                   </div>
 
-                  {/* Contenido de la Tarjeta */}
-                  <div className="p-4 sm:p-5">
-                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-carbon-400 mb-1.5">
-                      <Calendar className="w-3 h-3 text-guacamole-400" />
-                      <span>{formatReleaseDate(game.releaseDate)}</span>
+                  {/* Contenido de la Tarjeta con alturas uniformes */}
+                  <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-1.5 text-[11px] font-mono text-slate-400 mb-1.5">
+                        <Calendar className="w-3 h-3 text-guacamole-400" />
+                        <span>{formatReleaseDate(game.releaseDate)}</span>
+                      </div>
+
+                      <h4
+                        className="text-base font-bold text-white group-hover:text-guacamole-400 transition-colors line-clamp-1 mb-2"
+                        title={game.name}
+                      >
+                        {game.name}
+                      </h4>
+
+                      <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-3 h-9 overflow-hidden">
+                        {game.summary || 'Próximo estreno en catálogo de Steam.'}
+                      </p>
                     </div>
 
-                    <h4 className="text-base font-bold text-white group-hover:text-guacamole-400 transition-colors line-clamp-1 mb-2">
-                      {game.name}
-                    </h4>
-
-                    {game.summary && (
-                      <p className="text-xs text-carbon-400 line-clamp-2 leading-relaxed mb-3">
-                        {game.summary}
-                      </p>
-                    )}
-
                     {/* Etiquetas de Género */}
-                    <div className="flex flex-wrap gap-1 mb-3">
+                    <div className="flex flex-wrap gap-1.5 min-h-[24px]">
                       {game.genres.slice(0, 2).map((genre) => (
                         <span
                           key={genre}
-                          className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-carbon-800 text-carbon-300 border border-carbon-700/50"
+                          className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-carbon-surface text-slate-300 border border-white/5"
                         >
                           {genre}
                         </span>
@@ -483,15 +504,15 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
                   </div>
                 </div>
 
-                {/* Pie con Plataformas y Botón Me Interesa */}
-                <div className="px-4 pb-4 pt-3 border-t border-carbon-800/80 flex items-center justify-between gap-2">
-                  <div className="flex flex-wrap gap-1">
+                {/* Pie con Plataformas y Botón Me Interesa con altura fija y alineación uniforme */}
+                <div className="px-4 py-3 border-t border-guacamole-500/20 bg-carbon-deep/50 flex items-center justify-between gap-2 min-h-[52px]">
+                  <div className="flex items-center flex-wrap gap-1 max-w-[55%]">
                     {game.platforms.slice(0, 3).map((plat) => (
                       <span
                         key={plat}
-                        className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-carbon-950 text-carbon-400 border border-carbon-800"
+                        className="text-[10px] font-mono px-2 py-0.5 rounded bg-carbon-surface text-slate-300 border border-guacamole-500/20 whitespace-nowrap"
                       >
-                        {plat.replace('PlayStation ', 'PS').replace('Xbox Series ', 'Xbox ')}
+                        {cleanPlatformName(plat)}
                       </span>
                     ))}
                   </div>
@@ -499,23 +520,18 @@ export function ReleasesCalendar({ initialReleases }: ReleasesCalendarProps) {
                   <button
                     type="button"
                     onClick={() => toggleInterest(game.id)}
-                    className={`text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all flex items-center gap-1 shrink-0 ${
+                    className={`text-xs font-semibold px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-1.5 shrink-0 ${
                       isInterested
-                        ? 'bg-rose-500/10 border-rose-500/30 text-rose-400'
-                        : 'bg-carbon-800 hover:bg-carbon-700 border-carbon-700 text-slate-300 hover:text-white'
+                        ? 'bg-rose-500/15 border-rose-500/40 text-rose-400 font-bold'
+                        : 'bg-carbon-surface hover:bg-carbon-hover border-carbon-border hover:border-guacamole-500/40 text-slate-300 hover:text-white'
                     }`}
                   >
-                    {isInterested ? (
-                      <>
-                        <Check className="w-3 h-3 text-rose-400" />
-                        <span>Deseado</span>
-                      </>
-                    ) : (
-                      <>
-                        <Heart className="w-3 h-3" />
-                        <span>Me interesa</span>
-                      </>
-                    )}
+                    <Heart
+                      className={`w-3.5 h-3.5 ${
+                        isInterested ? 'fill-current text-rose-500' : ''
+                      }`}
+                    />
+                    <span>{isInterested ? 'Deseado' : 'Me interesa'}</span>
                   </button>
                 </div>
               </div>
