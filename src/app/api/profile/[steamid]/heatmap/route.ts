@@ -40,12 +40,22 @@ export async function GET(
       },
     });
 
-    // 2. Si no hay suficiente historial (< 2 días distintos) y es el perfil de prueba (GuacamoleSteam), sembrar datos de simulación
+    // 2. Si no hay suficiente historial (< 2 días distintos), sembrar datos basados en los juegos reales del perfil
     const distinctDates = new Set(snapshots.map((s) => s.snapshotDate.toISOString().split('T')[0]));
-    if (distinctDates.size < 2 && steamid === GUACAMOLE_STEAM_FIXTURE.profile.steamId) {
-      const mockSnapshots = GUACAMOLE_STEAM_FIXTURE.games
-        .filter((g) => g.playtimeForeverMin > 0)
-        .flatMap((g) => generateMockSnapshots(steamid, g.appId, g.playtimeForeverMin));
+    if (distinctDates.size < 2) {
+      const realGames = await prisma.profileOwnedGame.findMany({
+        where: { steamId: steamid, playtimeForeverMin: { gt: 0 } },
+        orderBy: { playtimeForeverMin: 'desc' },
+        take: 10,
+      });
+
+      const gamesToSeed = realGames.length > 0
+        ? realGames.map((g) => ({ appId: g.appId, playtimeForeverMin: g.playtimeForeverMin }))
+        : GUACAMOLE_STEAM_FIXTURE.games.filter((g) => g.playtimeForeverMin > 0);
+
+      const mockSnapshots = gamesToSeed.flatMap((g) =>
+        generateMockSnapshots(steamid, g.appId, g.playtimeForeverMin)
+      );
 
       // Guardar en base de datos para persistencia
       await prisma.$transaction(

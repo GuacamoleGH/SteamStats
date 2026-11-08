@@ -25,13 +25,21 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, onRefresh })
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const handleRefreshClick = async () => {
-    if (refreshing || !onRefresh) return;
+    if (refreshing) return;
     setRefreshing(true);
     setRefreshMsg(null);
     try {
-      await onRefresh();
+      if (onRefresh) {
+        await onRefresh();
+      } else {
+        const res = await fetch(`/api/profile/${data.steamId}/refresh`, { method: 'POST' });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || 'Error al refrescar');
+        }
+      }
       setRefreshMsg('Datos actualizados');
-      setTimeout(() => setRefreshMsg(null), 3000);
+      window.location.reload();
     } catch (err) {
       setRefreshMsg(err instanceof Error ? err.message : 'Error al refrescar');
     } finally {
@@ -54,6 +62,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ data, onRefresh })
               height={112}
               className="object-cover w-full h-full"
               priority
+              unoptimized
             />
           </div>
 

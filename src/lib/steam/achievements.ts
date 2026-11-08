@@ -139,8 +139,8 @@ export async function getProfileAchievements(
 ): Promise<ProfileAchievementsSummary> {
   const apiKey = process.env.STEAM_API_KEY;
 
-  // Si no hay API key o es el perfil de prueba, servir el fixture oficial
-  if (!apiKey || steamId === '76561198337759875') {
+  // Si no hay API key, servir el fixture oficial
+  if (!apiKey) {
     return calculateAchievementsSummary(GUACAMOLE_ACHIEVEMENTS_FIXTURE);
   }
 

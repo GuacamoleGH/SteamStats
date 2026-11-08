@@ -152,7 +152,7 @@ export async function getCompleteProfile(
         `https://api.steampowered.com/IPlayerService/GetBadges/v1/?key=${apiKey}&steamid=${steamId}`
       ).then((r) => r.json()).catch(() => ({ response: {} })),
       fetch(
-        `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${apiKey}&steamid=${steamId}&include_appdetails=1&include_played_free_games=1`
+        `https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${apiKey}&steamid=${steamId}&include_appinfo=1&include_played_free_games=1`
       ).then((r) => r.json()).catch(() => ({ response: {} })),
       fetch(
         `https://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${apiKey}&steamid=${steamId}`
@@ -269,11 +269,21 @@ export async function getCompleteProfile(
         });
       }
 
-      // 3. Guardar Insignias
+      // 3. Guardar Insignias (deduplicando por badgeId para respetar unicidad en BD)
       await tx.profileBadge.deleteMany({ where: { steamId } });
       if (rawBadges.length > 0) {
+        const uniqueBadges = new Map<number, any>();
+        for (const b of rawBadges) {
+          if (b.badgeid !== undefined && b.badgeid !== null) {
+            const existing = uniqueBadges.get(b.badgeid);
+            if (!existing || (b.level ?? 1) > (existing.level ?? 1) || (b.xp ?? 0) > (existing.xp ?? 0)) {
+              uniqueBadges.set(b.badgeid, b);
+            }
+          }
+        }
+
         await tx.profileBadge.createMany({
-          data: rawBadges.map((b: any) => ({
+          data: Array.from(uniqueBadges.values()).map((b: any) => ({
             steamId,
             badgeId: b.badgeid,
             level: b.level ?? 1,
